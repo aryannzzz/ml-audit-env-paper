@@ -1,0 +1,82 @@
+{
+  "@context": {
+    "@vocab": "https://schema.org/",
+    "cr": "http://mlcommons.org/croissant/",
+    "rai": "http://mlcommons.org/croissant/RAI/"
+  },
+  "@type": "cr:Dataset",
+  "name": "MLAuditBench",
+  "description": "MLAuditBench: An interactive RL environment for evaluating LLM agents on ML experiment integrity auditing. Contains 56 synthetic ML experiments across 3 difficulty tiers and 8 violation types.",
+  "url": "https://huggingface.co/spaces/DeltaDreamers/ml-audit-env",
+  "license": "https://opensource.org/licenses/MIT",
+  "version": "1.2.0",
+  "datePublished": "2026-03-30",
+  "creator": {
+    "@type": "Organization",
+    "name": "DeltaDreamers"
+  },
+  "keywords": [
+    "reinforcement-learning",
+    "ml-auditing",
+    "data-leakage",
+    "reproducibility",
+    "llm-benchmark",
+    "agent-evaluation"
+  ],
+  "citation": "MLAuditBench: An Interactive Environment for Evaluating LLM Agents on ML Experiment Integrity Auditing. DeltaDreamers, 2026.",
+  "distribution": [
+    {
+      "@type": "cr:FileObject",
+      "name": "environment-source",
+      "description": "Source code for the MLAuditBench environment",
+      "contentUrl": "https://huggingface.co/spaces/DeltaDreamers/ml-audit-env",
+      "encodingFormat": "application/zip"
+    },
+    {
+      "@type": "cr:FileObject",
+      "name": "experiment-templates",
+      "description": "Base JSON templates for 4 ML experiment archetypes",
+      "contentUrl": "experiments/templates/",
+      "encodingFormat": "application/json"
+    }
+  ],
+  "recordSet": [
+    {
+      "@type": "cr:RecordSet",
+      "name": "experiments",
+      "description": "56 synthetic ML experiments across 4 archetypes with 8 violation types",
+      "field": [
+        {"@type": "cr:Field", "name": "experiment_id", "dataType": "sc:Text"},
+        {"@type": "cr:Field", "name": "archetype", "dataType": "sc:Text", "description": "tabular_clf | timeseries_reg | tabular_multi | tabular_survival"},
+        {"@type": "cr:Field", "name": "difficulty", "dataType": "sc:Text", "description": "easy | medium | hard | clean"},
+        {"@type": "cr:Field", "name": "violations", "dataType": "sc:Text", "description": "List of V1-V8 violation codes"},
+        {"@type": "cr:Field", "name": "red_herrings", "dataType": "sc:Text", "description": "List of red herring types"}
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "name": "violation_taxonomy",
+      "description": "8 violation types based on Kapoor-Narayanan (2023) taxonomy",
+      "field": [
+        {"@type": "cr:Field", "name": "code", "dataType": "sc:Text", "description": "V1-V8"},
+        {"@type": "cr:Field", "name": "name", "dataType": "sc:Text"},
+        {"@type": "cr:Field", "name": "severity", "dataType": "sc:Text"},
+        {"@type": "cr:Field", "name": "evidence_artifacts", "dataType": "sc:Text"}
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "name": "scoring",
+      "description": "Episode scoring records",
+      "field": [
+        {"@type": "cr:Field", "name": "score", "dataType": "sc:Float", "description": "Final score 0.0-1.0"},
+        {"@type": "cr:Field", "name": "violation_score", "dataType": "sc:Float"},
+        {"@type": "cr:Field", "name": "efficiency_bonus", "dataType": "sc:Float"},
+        {"@type": "cr:Field", "name": "verdict_bonus", "dataType": "sc:Float"}
+      ]
+    }
+  ],
+  "rai:dataCollection": "All experiments are synthetically generated from parameterized templates. No real-world data or personally identifiable information is included.",
+  "rai:dataCollectionType": "Synthetic",
+  "rai:personalSensitiveInformation": "None. All experiment data is synthetic."
+}

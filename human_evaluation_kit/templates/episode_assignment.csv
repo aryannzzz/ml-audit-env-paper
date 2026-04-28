@@ -1,0 +1,4 @@
+participant_id,episode_order,task_tier,seed,is_practice
+P01,1,easy,42,no
+P01,2,medium,43,no
+P01,3,hard,44,no

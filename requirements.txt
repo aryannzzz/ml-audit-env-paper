@@ -1,0 +1,23 @@
+# ML Experiment Integrity Auditor - Dependencies
+# No heavy ML frameworks (sklearn, pandas, numpy, torch, etc.)
+# This keeps the Docker image small and deployment fast
+
+# Web framework
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+
+# Data validation
+pydantic==2.11.3
+
+# LLM client
+openai>=1.30.0
+
+# HTTP client
+requests==2.31.0
+httpx==0.27.0
+
+# Environment variables
+python-dotenv==1.0.0
+
+# Testing
+pytest>=8.2.0

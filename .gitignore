@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Runtime logs
+*.log
+
+# LaTeX build artifacts
+paper/*.aux
+paper/*.out
+paper/*.log
+paper/*.pdf
+paper/*.bbl
+paper/*.blg
+paper/*.fls
+paper/*.fdb_latexmk
+paper/*.synctex.gz
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dev/debug files
+**/generator.py.backup
+uv.lock

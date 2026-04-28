@@ -1,0 +1,75 @@
+{
+  "archetype": "text_clf",
+  "task_description": "Audit this text classification experiment for methodology violations. The experiment uses TF-IDF feature extraction and a linear classifier to categorise news articles into 4 topic categories (politics, business, sport, tech). Inspect each artifact carefully: the preprocessing code shows the vectorizer pipeline, split_config shows document ID splits, and model_config shows any hand-crafted feature engineering.",
+  "dataset_info": {
+    "dataset_name": "news_topic_clf",
+    "dataset_type": "text",
+    "n_samples": 11420,
+    "n_classes": 4,
+    "class_labels": ["politics", "business", "sport", "tech"],
+    "target_column": "category",
+    "text_column": "article_text",
+    "document_id_column": "doc_id",
+    "language": "en",
+    "source": "Preprocessed news articles (CC-licensed), 2019--2022",
+    "class_balance": "roughly equal (~2800 per class)"
+  },
+  "preprocessing": {
+    "fit_scope": "train_only",
+    "code_snippet": "from sklearn.feature_extraction.text import TfidfVectorizer\nX = df['article_text']\ny = df['category']\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.2, random_state=42, stratify=y\n)\nvectorizer = TfidfVectorizer(max_features=15000, ngram_range=(1, 2), sublinear_tf=True)\nX_train_tfidf = vectorizer.fit_transform(X_train)\nX_test_tfidf = vectorizer.transform(X_test)"
+  },
+  "split_config": {
+    "method": "stratified_random",
+    "test_size": 0.2,
+    "shuffle": true,
+    "random_state": 42,
+    "stratified": true,
+    "train_ids_sample": [101, 204, 378, 512, 689, 730, 841, 955, 1023, 1104],
+    "test_ids_sample": [9141, 9242, 9363, 9471, 9502, 9618, 9724, 9831, 9909, 10002]
+  },
+  "feature_engineering": {
+    "code_snippet": "# Additional hand-crafted features (appended to TF-IDF sparse matrix)\narticle_len = X_train.str.len().values.reshape(-1, 1)\navg_word_len = X_train.apply(lambda t: sum(len(w) for w in t.split()) / max(len(t.split()), 1)).values.reshape(-1, 1)\n# Concatenate with TF-IDF features\nimport scipy.sparse as sp\nX_train_full = sp.hstack([X_train_tfidf, article_len, avg_word_len])\nX_test_full  = sp.hstack([X_test_tfidf,  X_test.str.len().values.reshape(-1,1),\n                          X_test.apply(lambda t: sum(len(w) for w in t.split()) / max(len(t.split()),1)).values.reshape(-1,1)])"
+  },
+  "model_config": {
+    "model_type": "LogisticRegression",
+    "target_column": "category",
+    "feature_columns": ["tfidf_features", "article_length", "avg_word_length"],
+    "hyperparams": {
+      "C": 1.0,
+      "max_iter": 1000,
+      "solver": "lbfgs",
+      "multi_class": "multinomial"
+    }
+  },
+  "training_logs": "Training LogisticRegression on 9136 train samples...\nIteration 50: loss=0.412\nIteration 100: loss=0.298\nIteration 200: loss=0.241\nIteration 500: loss=0.219\nConverged after 612 iterations.\nTrain accuracy: 0.941\nVal accuracy (CV): 0.887",
+  "eval_report": {
+    "test_accuracy": 0.893,
+    "reported_metrics": {
+      "accuracy": 0.893
+    },
+    "best_score": 0.893,
+    "per_class_f1": {
+      "politics": 0.881,
+      "business": 0.902,
+      "sport": 0.921,
+      "tech": 0.868
+    }
+  },
+  "experiment_notes": "Text classification experiment on news articles. Single run, stratified split. TF-IDF features with logistic regression. Hand-crafted length features appended.",
+  "validation_strategy": {
+    "method": "train_test_split",
+    "holdout_set": "20% test",
+    "metrics_tracked": ["accuracy"],
+    "cv_folds": null
+  },
+  "run_history": {
+    "total_runs": 1,
+    "runs": [
+      {"run_id": 1, "seed": 42, "score": 0.893}
+    ]
+  },
+  "ground_truth": {
+    "violations": [],
+    "expected_verdict": "pass"
+  }
+}

@@ -1,0 +1,12 @@
+Medium
+seed_45 - 0.95
+seed_23 - 0.033
+seed_25 - 0.033
+
+Hard
+seed_32 - 0.1556
+seed_35 - 0.115
+
+Easy
+seed_53 - 0.0125
+seed_107 - 0.9125

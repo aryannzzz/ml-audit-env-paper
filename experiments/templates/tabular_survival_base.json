@@ -1,0 +1,105 @@
+{
+  "archetype": "tabular_survival",
+  "experiment_id": "tabular_survival_base",
+  "task_description": "Survival analysis: predict patient time-to-event (months until disease progression) using clinical and genomic features. Audit this experiment for data leakage, methodology violations, or result manipulation.",
+  "dataset_info": {
+    "dataset_type": "tabular",
+    "temporal_ordering": false,
+    "n_samples": 5000,
+    "n_features": 10,
+    "feature_columns": [
+      "age",
+      "treatment_type",
+      "tumor_size_mm",
+      "biomarker_level",
+      "cancer_stage",
+      "comorbidity_score",
+      "surgery_type",
+      "radiation_dose",
+      "chemo_cycles",
+      "genetic_risk_score"
+    ],
+    "target_column": "survival_months",
+    "entity_column": "patient_id",
+    "n_entities": 2500,
+    "samples_per_entity_avg": 2.0,
+    "censored_ratio": 0.35,
+    "source": "synthetic oncology dataset"
+  },
+  "preprocessing": {
+    "fit_scope": "train_only",
+    "transformers": ["StandardScaler", "OneHotEncoder"],
+    "code_snippet": "X_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.2, random_state=42\n)\nscaler = StandardScaler()\nX_train_scaled = scaler.fit_transform(X_train)\nX_test_scaled = scaler.transform(X_test)"
+  },
+  "split_config": {
+    "method": "random",
+    "test_size": 0.2,
+    "shuffle": true,
+    "random_state": 42,
+    "train_size": 4000,
+    "test_size_actual": 1000,
+    "train_ids_sample": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+    "test_ids_sample": [4001, 4002, 4003, 4004, 4005, 4006, 4007, 4008, 4009, 4010, 4011, 4012, 4013, 4014, 4015, 4016, 4017, 4018, 4019, 4020],
+    "overlap_count": 0,
+    "entity_overlap_count": 0,
+    "train_entities_sample": ["P001", "P002", "P003", "P004", "P005", "P006", "P007", "P008", "P009", "P010"],
+    "test_entities_sample": ["P2001", "P2002", "P2003", "P2004", "P2005", "P2006", "P2007", "P2008", "P2009", "P2010"]
+  },
+  "feature_engineering": {
+    "method": "none",
+    "code_snippet": "# No additional feature engineering applied"
+  },
+  "model_config": {
+    "model_class": "CoxPHFitter",
+    "feature_columns": [
+      "age",
+      "treatment_type",
+      "tumor_size_mm",
+      "biomarker_level",
+      "cancer_stage",
+      "comorbidity_score",
+      "surgery_type",
+      "radiation_dose",
+      "chemo_cycles",
+      "genetic_risk_score"
+    ],
+    "target_column": "survival_months",
+    "hyperparams": {
+      "penalizer": 0.1,
+      "l1_ratio": 0.0,
+      "alpha": 0.05
+    }
+  },
+  "training_logs": "Fitting Cox Proportional Hazards model...\nConvergence reached after 42 iterations.\nPartial log-likelihood: -4821.3\nConcordance index (train): 0.782\nConcordance index (5-fold CV): 0.751 +/- 0.018",
+  "eval_report": {
+    "reported_metrics": {
+      "c_index": 0.768,
+      "brier_score": 0.142
+    },
+    "best_score": 0.768,
+    "test_set_size": 1000
+  },
+  "experiment_notes": "Single experiment run. Cox PH model trained with L2 regularization. No hyperparameter search performed. Model evaluated using concordance index and integrated Brier score.",
+  "validation_strategy": {
+    "method": "5-fold cross validation + held-out test",
+    "test_set_purpose": "final_evaluation_only",
+    "metrics_tracked": ["c_index", "brier_score"],
+    "selection_criterion": "cv_c_index"
+  },
+  "run_history": {
+    "total_runs": 1,
+    "runs": [
+      {
+        "run_id": 1,
+        "seed": 42,
+        "cv_score": 0.751,
+        "test_c_index": 0.768,
+        "reported": true
+      }
+    ]
+  },
+  "ground_truth": {
+    "violations": [],
+    "expected_verdict": "pass"
+  }
+}

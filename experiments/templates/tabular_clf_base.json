@@ -1,0 +1,96 @@
+{
+  "archetype": "tabular_clf",
+  "experiment_id": "tabular_clf_base",
+  "task_description": "Binary classification: predict patient hospital readmission within 30 days using clinical features. Audit this experiment for data leakage, methodology violations, or result manipulation.",
+  "dataset_info": {
+    "dataset_type": "tabular",
+    "temporal_ordering": false,
+    "n_samples": 8000,
+    "n_features": 8,
+    "feature_columns": [
+      "age",
+      "bmi",
+      "glucose",
+      "insulin",
+      "blood_pressure",
+      "skin_thickness",
+      "pregnancies",
+      "diabetes_pedigree"
+    ],
+    "target_column": "readmitted",
+    "n_classes": 2,
+    "class_balance": "balanced",
+    "source": "synthetic clinical dataset"
+  },
+  "preprocessing": {
+    "fit_scope": "train_only",
+    "transformers": ["StandardScaler"],
+    "code_snippet": "X_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.2, random_state=42\n)\nscaler = StandardScaler()\nX_train_scaled = scaler.fit_transform(X_train)\nX_test_scaled = scaler.transform(X_test)"
+  },
+  "split_config": {
+    "method": "random",
+    "test_size": 0.2,
+    "shuffle": true,
+    "random_state": 42,
+    "train_size": 6400,
+    "test_size_actual": 1600,
+    "train_ids_sample": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+    "test_ids_sample": [6401, 6402, 6403, 6404, 6405, 6406, 6407, 6408, 6409, 6410, 6411, 6412, 6413, 6414, 6415, 6416, 6417, 6418, 6419, 6420],
+    "overlap_count": 0
+  },
+  "feature_engineering": {
+    "method": "none",
+    "code_snippet": "# No additional feature engineering applied"
+  },
+  "model_config": {
+    "model_class": "RandomForestClassifier",
+    "feature_columns": [
+      "age",
+      "bmi",
+      "glucose",
+      "insulin",
+      "blood_pressure",
+      "skin_thickness",
+      "pregnancies",
+      "diabetes_pedigree"
+    ],
+    "target_column": "readmitted",
+    "hyperparams": {
+      "n_estimators": 100,
+      "max_depth": 8,
+      "min_samples_split": 5,
+      "random_state": 42
+    }
+  },
+  "training_logs": "Epoch 1/1 (single fit for RF)\nFitting 100 trees...\nOOB score: 0.871\nFit complete.\nTrain accuracy: 0.942\nValidation accuracy (5-fold CV): 0.891 +/- 0.012",
+  "eval_report": {
+    "reported_metrics": {
+      "accuracy": 0.914,
+      "roc_auc": 0.961
+    },
+    "best_score": 0.914,
+    "test_set_size": 1600
+  },
+  "experiment_notes": "Single experiment run. RandomForest trained with standard hyperparameters. No hyperparameter search performed. Model selected based on cross-validation accuracy.",
+  "validation_strategy": {
+    "method": "5-fold cross validation + held-out test",
+    "metrics_tracked": ["accuracy", "roc_auc"],
+    "selection_criterion": "cv_accuracy"
+  },
+  "run_history": {
+    "total_runs": 1,
+    "runs": [
+      {
+        "run_id": 1,
+        "seed": 42,
+        "cv_score": 0.891,
+        "test_accuracy": 0.914,
+        "reported": true
+      }
+    ]
+  },
+  "ground_truth": {
+    "violations": [],
+    "expected_verdict": "pass"
+  }
+}

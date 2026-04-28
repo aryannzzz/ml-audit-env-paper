@@ -1,0 +1,102 @@
+{
+  "total_episodes": 27,
+  "per_model_tier": {
+    "gpt-4.1-mini|easy": {
+      "n": 3,
+      "mean_score": 0.4893,
+      "std_score": 0.4104,
+      "min_score": 0.24,
+      "max_score": 0.963,
+      "mean_steps": 5.7
+    },
+    "gpt-4.1-mini|hard": {
+      "n": 3,
+      "mean_score": 0.4283,
+      "std_score": 0.2998,
+      "min_score": 0.086,
+      "max_score": 0.644,
+      "mean_steps": 16.3
+    },
+    "gpt-4.1-mini|medium": {
+      "n": 3,
+      "mean_score": 0.6387,
+      "std_score": 0.5531,
+      "min_score": 0.0,
+      "max_score": 0.958,
+      "mean_steps": 6.3
+    },
+    "gpt-4.1|easy": {
+      "n": 3,
+      "mean_score": 0.5393,
+      "std_score": 0.3688,
+      "min_score": 0.29,
+      "max_score": 0.963,
+      "mean_steps": 4.3
+    },
+    "gpt-4.1|hard": {
+      "n": 3,
+      "mean_score": 0.5613,
+      "std_score": 0.2772,
+      "min_score": 0.279,
+      "max_score": 0.833,
+      "mean_steps": 11.3
+    },
+    "gpt-4.1|medium": {
+      "n": 3,
+      "mean_score": 0.7213,
+      "std_score": 0.4099,
+      "min_score": 0.248,
+      "max_score": 0.958,
+      "mean_steps": 7
+    },
+    "o4-mini|easy": {
+      "n": 3,
+      "mean_score": 0.4277,
+      "std_score": 0.4636,
+      "min_score": 0.16,
+      "max_score": 0.963,
+      "mean_steps": 7
+    },
+    "o4-mini|hard": {
+      "n": 3,
+      "mean_score": 0.478,
+      "std_score": 0.4348,
+      "min_score": 0.106,
+      "max_score": 0.956,
+      "mean_steps": 14
+    },
+    "o4-mini|medium": {
+      "n": 3,
+      "mean_score": 0.6867,
+      "std_score": 0.4561,
+      "min_score": 0.16,
+      "max_score": 0.95,
+      "mean_steps": 8.3
+    }
+  },
+  "violation_frequency": {
+    "gpt-4.1-mini": {
+      "V1": 0.556,
+      "V3": 0.667,
+      "V4": 0.222,
+      "V5": 0.222,
+      "V6": 0.111,
+      "V2": 0.444,
+      "V7": 0.222
+    },
+    "gpt-4.1": {
+      "V1": 0.333,
+      "V3": 0.333,
+      "V2": 0.333,
+      "V4": 0.111,
+      "V6": 0.111,
+      "V5": 0.222,
+      "V7": 0.111
+    },
+    "o4-mini": {
+      "V1": 0.333,
+      "V2": 0.222,
+      "V7": 0.111
+    }
+  }
+}

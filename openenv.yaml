@@ -1,0 +1,288 @@
+# OpenEnv Specification for ML Experiment Integrity Auditor
+# Version 1.0.0
+
+name: ml-audit-bench
+version: "1.0.0"
+description: >
+  An RL environment where agents audit synthetic machine learning experiments for
+  data leakage, methodology violations, and result manipulation. Scored on
+  precision, recall, and evidence-grounded reasoning quality. The first RL
+  environment specifically designed for the ML reproducibility crisis.
+
+author: "DeltaDreamers"
+license: "MIT"
+
+tags:
+  - openenv
+  - ml-audit
+  - reproducibility
+  - data-leakage
+  - rl-environment
+  - llm-benchmark
+
+pool_size: 56
+pool_size_v1_1: 62
+
+# Task definitions
+tasks:
+  - id: easy
+    description: "Find a single preprocessing leakage violation. 8-step budget. No red herrings."
+    difficulty: easy
+    max_steps: 8
+    expected_score_range: [0.82, 0.95]
+    violations_count: 1
+
+  - id: medium
+    description: "Find two violations requiring cross-artifact reasoning. 12-step budget. Includes red herrings."
+    difficulty: medium
+    max_steps: 12
+    expected_score_range: [0.70, 0.98]
+    violations_count: 2
+
+  - id: hard
+    description: "Find three violations + resist two red herrings, compound violations. 18-step budget."
+    difficulty: hard
+    max_steps: 18
+    expected_score_range: [0.25, 0.42]
+    violations_count: 3
+
+# Observation space definition
+observation_space:
+  type: text
+  format: json
+  description: >
+    JSON-serialized Observation object containing experiment metadata, list of
+    available artifacts, already-inspected artifacts, current flags raised, step
+    budget, last action result, and reward information. Ground truth violations
+    are NEVER included in observations.
+  fields:
+    - name: experiment_id
+      type: string
+      description: Unique identifier for the current experiment
+    - name: task_description
+      type: string
+      description: Human-readable description of the audit task
+    - name: dataset_type
+      type: string
+      enum: [tabular, timeseries]
+    - name: available_artifacts
+      type: array[string]
+      description: List of artifacts available for inspection
+    - name: inspected_artifacts
+      type: array[string]
+      description: Artifacts already read by agent
+    - name: flags_raised
+      type: array[FlagRecord]
+      description: List of violation flags raised
+    - name: steps_used
+      type: integer
+    - name: step_budget
+      type: integer
+    - name: step_reward
+      type: float
+    - name: cumulative_reward
+      type: float
+    - name: message
+      type: string
+
+# Action space definition
+action_space:
+  type: text
+  format: json
+  description: >
+    JSON-formatted action objects. Five action types available, each with
+    specific required fields and reward structure.
+  actions:
+    - name: inspect
+      description: "Read a single artifact in full"
+      params:
+        - name: artifact
+          type: string
+          required: true
+      reward: "+0.02 first time, -0.01 re-inspect"
+
+    - name: compare
+      description: "Read two artifacts side-by-side in one step"
+      params:
+        - name: artifact_a
+          type: string
+          required: true
+        - name: artifact_b
+          type: string
+          required: true
+      reward: "+0.03 if both new, +0.015 per new artifact"
+
+    - name: flag
+      description: "Raise a violation flag with evidence quote"
+      params:
+        - name: violation_type
+          type: string
+          enum: [V1, V2, V3, V4, V5, V6, V7, V8]
+          required: true
+        - name: evidence_artifact
+          type: string
+          required: true
+        - name: evidence_quote
+          type: string
+          required: true
+          description: "EXACT string from artifact content"
+        - name: severity
+          type: string
+          enum: [high, medium, low]
+          required: true
+      reward: "+0.15 correct, -0.10 false positive, -0.05 fabricated evidence"
+
+    - name: unflag
+      description: "Remove a previously raised flag"
+      params:
+        - name: flag_id
+          type: string
+          required: true
+      reward: "+0.05 if removing false positive, -0.10 if removing correct flag"
+
+    - name: submit
+      description: "End episode with verdict and summary"
+      params:
+        - name: verdict
+          type: string
+          enum: [pass, revise, reject]
+          required: true
+        - name: summary
+          type: string
+          required: true
+      reward: "+0.10 correct verdict, 0.0 wrong verdict"
+
+# Reward and scoring
+reward_range: [0.0, 1.0]
+scoring:
+  violation_detection: 0.80
+  efficiency: 0.10
+  verdict: 0.10
+
+grading_criteria:
+  formula: "score = 0.80 * violation_score + 0.10 * efficiency_bonus + 0.10 * verdict_bonus"
+  components:
+    violation_score:
+      description: "Fraction of true violations correctly flagged with valid evidence quotes"
+      range: [0.0, 1.0]
+    efficiency_bonus:
+      description: "How efficiently the agent uses the step budget"
+      range: [0.0, 1.0]
+    verdict_bonus:
+      description: "1.0 for correct final verdict, else 0.0"
+      range: [0.0, 1.0]
+  examples:
+    - "1/1 violation found with evidence in 3/8 steps and correct verdict: 0.80*1.0 + 0.10*0.625 + 0.10*1.0 = 0.9625"
+    - "Wrong violation flag incurs a -0.10 false-positive penalty in step rewards"
+
+# Episode termination conditions
+episode_termination:
+  - "Agent calls submit() action"
+  - "Agent exceeds max_steps budget"
+
+# Violation taxonomy
+violation_taxonomy:
+  V1:
+    name: "Preprocessing Leakage"
+    description: "Scaler/encoder fit on full dataset before train-test split"
+    severity: high
+    artifact: "preprocessing"
+
+  V2:
+    name: "Temporal Shuffle"
+    description: "Time-series data shuffled before split"
+    severity: high
+    artifact: "split_config + dataset_info"
+
+  V3:
+    name: "Target Leakage"
+    description: "Target variable included in feature columns"
+    severity: high
+    artifact: "model_config"
+
+  V4:
+    name: "Train/Test Overlap"
+    description: "Overlapping sample IDs in train and test splits"
+    severity: high
+    artifact: "split_config"
+
+  V5:
+    name: "Cherry-Picking"
+    description: "Multiple runs performed, only best reported without disclosure"
+    severity: medium
+    artifact: "run_history + experiment_notes"
+
+  V6:
+    name: "Metric Shopping"
+    description: "Multiple metrics tracked, only best reported"
+    severity: medium
+    artifact: "validation_strategy + eval_report"
+
+  V7:
+    name: "Entity Leakage"
+    description: "Same real-world entities appear in both train and test splits"
+    severity: high
+    artifact: "split_config + dataset_info"
+    reference: "Kapoor & Narayanan (2023)"
+
+  V8:
+    name: "Multi-Test Leakage"
+    description: "Test set used for both hyperparameter tuning and final evaluation"
+    severity: high
+    artifact: "validation_strategy + experiment_notes"
+
+# API endpoints
+endpoints:
+  - path: /health
+    method: GET
+    description: "Health check"
+
+  - path: /reset
+    method: POST
+    description: "Start new episode"
+    params:
+      - name: task
+        type: string
+        enum: [easy, medium, hard]
+      - name: seed
+        type: integer
+        required: false
+        description: "Optional seed for deterministic experiment selection"
+
+  - path: /step
+    method: POST
+    description: "Execute action"
+
+  - path: /state
+    method: GET
+    description: "Get current episode state"
+
+  - path: /tasks
+    method: GET
+    description: "List available tasks"
+
+  - path: /baseline
+    method: GET
+    description: "Get pre-computed baseline results"
+
+  - path: /grader
+    method: POST
+    description: "Direct grader invocation"
+
+  - path: /close
+    method: POST
+    description: "Close current episode and release resources"
+
+# Infrastructure requirements
+infrastructure:
+  min_cpu: 2
+  min_memory_gb: 8
+  port: 7860
+  inference_timeout_minutes: 20
+
+reproducibility:
+  deterministic_seed: 42
+  instructions:
+    - "Call POST /reset with task and seed=42 for reproducible task instances"
+    - "If a deployment does not support seed, call POST /reset with task only as backward-compatible fallback"
+    - "Use temperature=0 style deterministic decoding where supported"

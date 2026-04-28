@@ -1,0 +1,97 @@
+{
+  "archetype": "timeseries_reg",
+  "experiment_id": "timeseries_reg_base",
+  "task_description": "Time-series regression: predict daily energy demand (kWh) using weather and temporal features. Audit this experiment for data leakage, methodology violations, or result manipulation.",
+  "dataset_info": {
+    "dataset_type": "timeseries",
+    "temporal_ordering": true,
+    "date_range": "2020-01-01 to 2022-12-31",
+    "frequency": "daily",
+    "n_samples": 1096,
+    "n_features": 6,
+    "feature_columns": [
+      "temperature_c",
+      "humidity_pct",
+      "wind_speed_kmh",
+      "is_weekend",
+      "month",
+      "day_of_week"
+    ],
+    "target_column": "energy_demand_kwh",
+    "n_classes": null,
+    "source": "synthetic energy grid dataset"
+  },
+  "preprocessing": {
+    "fit_scope": "train_only",
+    "transformers": [
+      "StandardScaler"
+    ],
+    "code_snippet": "# Time-based split - NO shuffling\ntrain_df = df[df['date'] < '2022-01-01']\ntest_df  = df[df['date'] >= '2022-01-01']\nX_train, y_train = train_df[features], train_df[target]\nX_test,  y_test  = test_df[features],  test_df[target]\nscaler = StandardScaler()\nX_train_scaled = scaler.fit_transform(X_train)\nX_test_scaled  = scaler.transform(X_test)"
+  },
+  "split_config": {
+    "method": "temporal",
+    "split_date": "2022-01-01",
+    "shuffle": false,
+    "train_size": 731,
+    "test_size_actual": 365,
+    "overlap_count": 0
+  },
+  "feature_engineering": {
+    "method": "lag_features",
+    "code_snippet": "# Temporal lag features from weather signal (does NOT use target column)\nX_train['temp_lag_7']  = X_train['temperature_c'].shift(7)\nX_train['temp_ma_7']   = X_train['temperature_c'].rolling(7).mean()\nX_test['temp_lag_7']   = X_test['temperature_c'].shift(7)\nX_test['temp_ma_7']    = X_test['temperature_c'].rolling(7).mean()"
+  },
+  "model_config": {
+    "model_class": "GradientBoostingRegressor",
+    "feature_columns": [
+      "temperature_c",
+      "humidity_pct",
+      "wind_speed_kmh",
+      "is_weekend",
+      "month",
+      "day_of_week",
+      "temp_lag_7",
+      "temp_ma_7"
+    ],
+    "target_column": "energy_demand_kwh",
+    "hyperparams": {
+      "n_estimators": 200,
+      "max_depth": 4,
+      "learning_rate": 0.05,
+      "random_state": 42
+    }
+  },
+  "training_logs": "GradientBoostingRegressor training...\nIteration 50: train RMSE = 201.3, val RMSE = 218.4\nIteration 100: train RMSE = 178.9, val RMSE = 189.2\nIteration 150: train RMSE = 165.4, val RMSE = 174.1\nIteration 200: train RMSE = 158.2, val RMSE = 166.3\nTraining complete.",
+  "eval_report": {
+    "reported_metrics": {
+      "rmse": 142.3,
+      "mae": 98.1
+    },
+    "best_score": 142.3,
+    "test_set_size": 365
+  },
+  "experiment_notes": "Temporal split used (no shuffling). Lag features computed from weather signal (temperature_c), not from the target variable. Single run with fixed seed.",
+  "validation_strategy": {
+    "method": "temporal holdout",
+    "metrics_tracked": [
+      "rmse",
+      "mae"
+    ],
+    "selection_criterion": "rmse"
+  },
+  "run_history": {
+    "total_runs": 1,
+    "runs": [
+      {
+        "run_id": 1,
+        "seed": 42,
+        "val_rmse": 166.3,
+        "test_rmse": 142.3,
+        "reported": true
+      }
+    ]
+  },
+  "ground_truth": {
+    "violations": [],
+    "expected_verdict": "pass"
+  }
+}

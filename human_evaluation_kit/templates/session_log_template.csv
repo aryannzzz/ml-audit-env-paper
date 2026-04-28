@@ -1,0 +1,2 @@
+participant_id,task_tier,seed,start_time,end_time,steps_used,final_score,verdict_submitted,summary_text,flags_count,correct_flags,false_positives,protocol_violation,violation_notes
+P01,easy,42,,,,,,,,,,

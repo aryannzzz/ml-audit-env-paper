@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ml-audit-bench"
+version = "1.0.0"
+description = "ML experiment integrity auditing benchmark"
+requires-python = ">=3.10"
+dependencies = [
+	"openenv-core>=0.2.0",
+]
+
+[project.scripts]
+ml-audit-bench = "app:app"

@@ -1,0 +1,97 @@
+{
+  "archetype": "tabular_multi",
+  "experiment_id": "tabular_multi_base",
+  "task_description": "Multi-class classification: predict product category (5 classes) from product metadata. Audit this experiment for data leakage, methodology violations, or result manipulation.",
+  "dataset_info": {
+    "dataset_type": "tabular",
+    "temporal_ordering": false,
+    "n_samples": 20000,
+    "n_features": 7,
+    "feature_columns": [
+      "title_length",
+      "description_length",
+      "price_usd",
+      "brand_encoded",
+      "weight_kg",
+      "has_image",
+      "seller_rating"
+    ],
+    "target_column": "category",
+    "n_classes": 5,
+    "class_balance": "balanced",
+    "classes": ["Electronics", "Clothing", "Home & Garden", "Sports", "Books"],
+    "source": "synthetic e-commerce product dataset"
+  },
+  "preprocessing": {
+    "fit_scope": "train_only",
+    "transformers": ["OrdinalEncoder", "StandardScaler"],
+    "code_snippet": "X_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.2, random_state=42, stratify=y\n)\nencoder = OrdinalEncoder()\nX_train['brand_encoded'] = encoder.fit_transform(X_train[['brand']])\nX_test['brand_encoded']  = encoder.transform(X_test[['brand']])\nscaler = StandardScaler()\nX_train_scaled = scaler.fit_transform(X_train)\nX_test_scaled  = scaler.transform(X_test)"
+  },
+  "split_config": {
+    "method": "stratified_random",
+    "test_size": 0.2,
+    "shuffle": true,
+    "random_state": 42,
+    "stratify": true,
+    "train_size": 16000,
+    "test_size_actual": 4000,
+    "train_ids_sample": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+    "test_ids_sample": [16001, 16002, 16003, 16004, 16005, 16006, 16007, 16008, 16009, 16010, 16011, 16012, 16013, 16014, 16015, 16016, 16017, 16018, 16019, 16020],
+    "overlap_count": 0
+  },
+  "feature_engineering": {
+    "method": "encoding",
+    "code_snippet": "# OrdinalEncoder applied to brand column (fit on train only - see preprocessing)"
+  },
+  "model_config": {
+    "model_class": "LogisticRegression",
+    "feature_columns": [
+      "title_length",
+      "description_length",
+      "price_usd",
+      "brand_encoded",
+      "weight_kg",
+      "has_image",
+      "seller_rating"
+    ],
+    "target_column": "category",
+    "hyperparams": {
+      "C": 1.0,
+      "max_iter": 1000,
+      "multi_class": "multinomial",
+      "solver": "lbfgs",
+      "random_state": 42
+    }
+  },
+  "training_logs": "LogisticRegression fitting...\nOptimization converged at iteration 847.\nTrain accuracy: 0.971\n5-fold CV accuracy: 0.951 +/- 0.008",
+  "eval_report": {
+    "reported_metrics": {
+      "accuracy": 0.961,
+      "roc_auc_ovr": 0.991
+    },
+    "best_score": 0.961,
+    "test_set_size": 4000
+  },
+  "experiment_notes": "Single experiment. Logistic regression with multinomial objective. Stratified split to preserve class balance.",
+  "validation_strategy": {
+    "method": "5-fold stratified CV + held-out test",
+    "metrics_tracked": ["accuracy", "roc_auc_ovr"],
+    "selection_criterion": "cv_accuracy"
+  },
+  "run_history": {
+    "total_runs": 1,
+    "runs": [
+      {
+        "run_id": 1,
+        "seed": 42,
+        "cv_score": 0.951,
+        "test_accuracy": 0.961,
+        "reported": true
+      }
+    ]
+  },
+  "ground_truth": {
+    "violations": [],
+    "expected_verdict": "pass"
+  }
+}

@@ -1,0 +1,546 @@
+=== MODEL=gpt-4.1-mini SEED=42 ATTEMPT=1 EXIT=0 ===
+[START] task=easy env=ml-audit-bench model=gpt-4.1-mini
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"flag","violation_type":"V1","evidence_artifact":"preprocessing","evidence_quote":"scaler.fit_transform(X_all)","severity":"high"} reward=0.15 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"training_logs"} reward=0.01 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"eval_report"} reward=0.01 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"experiment_notes"} reward=0.01 done=false error=null
+[STEP] step=9 action={"type":"submit","verdict":"reject","summary":"Reached step budget. Flags raised: ['V1']"} reward=0.00 done=true error=null
+[END] success=true steps=9 score=0.900 rewards=0.02,0.02,0.15,0.02,0.02,0.01,0.01,0.01,0.00
+[START] task=medium env=ml-audit-bench model=gpt-4.1-mini
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"feature_engineering"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"validation_strategy"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"experiment_notes"} reward=0.01 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"run_history"} reward=0.01 done=false error=null
+[STEP] step=10 action={"type":"inspect","artifact":"training_logs"} reward=0.01 done=false error=null
+[STEP] step=11 action={"type":"flag","violation_type":"V1","evidence_artifact":"feature_engineering","evidence_quote":"# Compute lag features on the full sequence BEFORE splitting (leakage!)","severity":"high"} reward=0.14 done=false error=null
+[STEP] step=12 action={"type":"flag","violation_type":"V5","evidence_artifact":"run_history","evidence_quote":"\"total_runs\": 11","severity":"medium"} reward=0.14 done=false error=null
+[STEP] step=13 action={"type":"submit","verdict":"reject","summary":"Reached step budget. Flags raised: ['V1', 'V5']"} reward=0.00 done=true error=null
+[END] success=true steps=13 score=0.900 rewards=0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.01,0.01,0.01,0.14,0.14,0.00
+[START] task=hard env=ml-audit-bench model=gpt-4.1-mini
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"validation_strategy"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"run_history"} reward=0.02 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"experiment_notes"} reward=0.02 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=10 action={"type":"flag","violation_type":"V3","evidence_artifact":"model_config","evidence_quote":"\"readmitted\"","severity":"high"} reward=-0.10 done=false error=null
+[STEP] step=11 action={"type":"flag","violation_type":"V5","evidence_artifact":"experiment_notes","evidence_quote":"Single experiment run. RandomForest trained with standard hyperparameters. No hyperparameter search performed.","severity":"medium"} reward=-0.10 done=false error=null
+[STEP] step=12 action={"type":"flag","violation_type":"V6","evidence_artifact":"validation_strategy","evidence_quote":"\"accuracy\",\n    \"roc_auc\"","severity":"medium"} reward=-0.12 done=false error=null
+[STEP] step=13 action={"type":"submit","verdict":"reject","summary":"Found three violations: V3 target leakage (target in features), V5 cherry-picking (single run without disclosure), and V6 metric shopping (multiple metrics tracked but only one emphasized)."} reward=0.01 done=true error=null
+[END] success=true steps=13 score=0.028 rewards=0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,-0.10,-0.10,-0.12,0.01
+--- STDERR ---
+Starting ML Audit inference...
+
+=== MODEL=gpt-4.1-mini SEED=43 ATTEMPT=1 EXIT=0 ===
+[START] task=easy env=ml-audit-bench model=gpt-4.1-mini
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"validation_strategy"} reward=0.01 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"run_history"} reward=0.01 done=false error=null
+[STEP] step=8 action={"type":"submit","verdict":"pass","summary":"No data leakage or methodology violations found; clean time-series split and proper preprocessing."} reward=0.90 done=true error=null
+[END] success=true steps=8 score=0.900 rewards=0.02,0.02,0.02,0.02,0.02,0.01,0.01,0.90
+[START] task=medium env=ml-audit-bench model=gpt-4.1-mini
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"validation_strategy"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"run_history"} reward=0.02 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"experiment_notes"} reward=0.01 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"training_logs"} reward=0.01 done=false error=null
+[STEP] step=10 action={"type":"submit","verdict":"pass","summary":"No evidence of data leakage, target leakage, or methodology violations found after inspecting all artifacts."} reward=0.91 done=true error=null
+[END] success=true steps=10 score=0.917 rewards=0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.01,0.01,0.91
+[START] task=hard env=ml-audit-bench model=gpt-4.1-mini
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"validation_strategy"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"run_history"} reward=0.02 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"experiment_notes"} reward=0.02 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"feature_engineering"} reward=0.02 done=false error=null
+[STEP] step=10 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=11 action={"type":"submit","verdict":"pass","summary":"No evidence of leakage, temporal shuffle, target leakage, or cherry-picking; experiment is clean."} reward=0.94 done=true error=null
+[END] success=true steps=11 score=0.939 rewards=0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.94
+--- STDERR ---
+Starting ML Audit inference...
+
+=== MODEL=gpt-4.1-mini SEED=44 ATTEMPT=1 EXIT=0 ===
+[START] task=easy env=ml-audit-bench model=gpt-4.1-mini
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"validation_strategy"} reward=0.01 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"experiment_notes"} reward=0.01 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"run_history"} reward=0.01 done=false error=null
+[STEP] step=9 action={"type":"submit","verdict":"pass","summary":"Reached step budget. Flags raised: none"} reward=0.00 done=true error=null
+[END] success=true steps=9 score=0.160 rewards=0.02,0.02,0.02,0.02,0.02,0.01,0.01,0.01,0.00
+[START] task=medium env=ml-audit-bench model=gpt-4.1-mini
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"validation_strategy"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"experiment_notes"} reward=0.02 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"run_history"} reward=0.01 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"feature_engineering"} reward=0.01 done=false error=null
+[STEP] step=10 action={"type":"inspect","artifact":"training_logs"} reward=0.01 done=false error=null
+[STEP] step=11 action={"type":"submit","verdict":"pass","summary":"No evidence of leakage or methodology violations found; experiment is clean."} reward=0.90 done=true error=null
+[END] success=true steps=11 score=0.908 rewards=0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.01,0.01,0.01,0.90
+[START] task=hard env=ml-audit-bench model=gpt-4.1-mini
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"validation_strategy"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"experiment_notes"} reward=0.02 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"run_history"} reward=0.02 done=false error=null
+[STEP] step=9 action={"type":"flag","violation_type":"V1","evidence_artifact":"preprocessing","evidence_quote":"scaler.fit_transform(X_all)","severity":"high"} reward=0.15 done=false error=null
+[STEP] step=10 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=11 action={"type":"flag","violation_type":"V4","evidence_artifact":"split_config","evidence_quote":"1,\n    2,\n    3,\n    4,\n    5,\n    6,","severity":"high"} reward=0.15 done=false error=null
+[STEP] step=12 action={"type":"flag","violation_type":"V7","evidence_artifact":"experiment_notes","evidence_quote":"grouped entities exist; verify split strategy carefully","severity":"medium"} reward=-0.12 done=false error=null
+[STEP] step=13 action={"type":"submit","verdict":"reject","summary":"Preprocessing leakage (scaler fit on full data), train/test overlap (shared IDs in split), and entity leakage (grouped entities split without GroupShuffleSplit) detected."} reward=0.47 done=true error=null
+[END] success=true steps=13 score=0.483 rewards=0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.15,0.02,0.15,-0.12,0.47
+--- STDERR ---
+Starting ML Audit inference...
+
+=== MODEL=gpt-4.1 SEED=42 ATTEMPT=1 EXIT=0 ===
+[START] task=easy env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"flag","violation_type":"V1","evidence_artifact":"preprocessing","evidence_quote":"fit_transform(X_all)","severity":"high"} reward=0.15 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"training_logs"} reward=0.01 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"eval_report"} reward=0.01 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"experiment_notes"} reward=0.01 done=false error=null
+[STEP] step=9 action={"type":"submit","verdict":"reject","summary":"Reached step budget. Flags raised: ['V1']"} reward=0.00 done=true error=null
+[END] success=true steps=9 score=0.900 rewards=0.02,0.02,0.15,0.02,0.02,0.01,0.01,0.01,0.00
+[START] task=medium env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"experiment_notes"} reward=0.02 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"feature_engineering"} reward=0.01 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"validation_strategy"} reward=0.01 done=false error=null
+[STEP] step=10 action={"type":"inspect","artifact":"run_history"} reward=0.01 done=false error=null
+[STEP] step=11 action={"type":"flag","violation_type":"V1","evidence_artifact":"preprocessing","evidence_quote":"scaler.fit_transform(X_all)","severity":"high"} reward=0.14 done=false error=null
+[STEP] step=12 action={"type":"flag","violation_type":"V5","evidence_artifact":"run_history","evidence_quote":"\"total_runs\": 11","severity":"medium"} reward=0.14 done=false error=null
+[STEP] step=13 action={"type":"submit","verdict":"reject","summary":"Reached step budget. Flags raised: ['V1', 'V5']"} reward=0.00 done=true error=null
+[END] success=true steps=13 score=0.900 rewards=0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.01,0.01,0.01,0.14,0.14,0.00
+[START] task=hard env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"experiment_notes"} reward=0.02 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"validation_strategy"} reward=0.02 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"run_history"} reward=0.02 done=false error=null
+[STEP] step=10 action={"type":"submit","verdict":"pass","summary":"All artifacts inspected; no violations found in data handling, methodology, or reporting."} reward=0.94 done=true error=null
+[END] success=true steps=10 score=0.944 rewards=0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.94
+--- STDERR ---
+Starting ML Audit inference...
+
+=== MODEL=gpt-4.1 SEED=43 ATTEMPT=1 EXIT=0 ===
+[START] task=easy env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"validation_strategy"} reward=0.01 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"run_history"} reward=0.01 done=false error=null
+[STEP] step=8 action={"type":"submit","verdict":"pass","summary":"All inspected artifacts show correct methodology; no violations found."} reward=0.90 done=true error=null
+[END] success=true steps=8 score=0.900 rewards=0.02,0.02,0.02,0.02,0.02,0.01,0.01,0.90
+[START] task=medium env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"experiment_notes"} reward=0.02 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"validation_strategy"} reward=0.01 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"run_history"} reward=0.01 done=false error=null
+[STEP] step=10 action={"type":"flag","violation_type":"V7","evidence_artifact":"split_config","evidence_quote":"\"method\": \"random\"","severity":"high"} reward=-0.11 done=false error=null
+[STEP] step=11 action={"type":"flag","violation_type":"V7","evidence_artifact":"split_config","evidence_quote":"train_entities_sample","severity":"high"} reward=-0.11 done=false error=null
+[STEP] step=12 action={"type":"unflag","flag_id":"f1"} reward=0.04 done=false error=null
+[STEP] step=13 action={"type":"submit","verdict":"pass","summary":"Reached step budget. Flags raised: none"} reward=0.00 done=true error=null
+[END] success=true steps=13 score=0.240 rewards=0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.01,0.01,-0.11,-0.11,0.04,0.00
+[START] task=hard env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"feature_engineering"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"validation_strategy"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"experiment_notes"} reward=0.02 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"run_history"} reward=0.02 done=false error=null
+[STEP] step=10 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=11 action={"type":"submit","verdict":"pass","summary":"All artifacts inspected; no violations found in data handling, splitting, or reporting."} reward=0.94 done=true error=null
+[END] success=true steps=11 score=0.939 rewards=0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.94
+--- STDERR ---
+Starting ML Audit inference...
+
+=== MODEL=gpt-4.1 SEED=44 ATTEMPT=1 EXIT=0 ===
+[START] task=easy env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"eval_report"} reward=0.01 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"experiment_notes"} reward=0.01 done=false error=null
+[STEP] step=8 action={"type":"flag","violation_type":"V7","evidence_artifact":"split_config","evidence_quote":"\"method\": \"stratified_random\"","severity":"high"} reward=-0.10 done=false error=null
+[STEP] step=9 action={"type":"submit","verdict":"pass","summary":"Reached step budget. Flags raised: none"} reward=0.00 done=true error=null
+[END] success=true steps=9 score=0.240 rewards=0.02,0.02,0.02,0.02,0.02,0.01,0.01,-0.10,0.00
+[START] task=medium env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"feature_engineering"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"validation_strategy"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"run_history"} reward=0.01 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"experiment_notes"} reward=0.01 done=false error=null
+[STEP] step=10 action={"type":"inspect","artifact":"training_logs"} reward=0.01 done=false error=null
+[STEP] step=11 action={"type":"submit","verdict":"pass","summary":"All artifacts inspected; no violations found in data handling, splitting, reporting, or methodology."} reward=0.90 done=true error=null
+[END] success=true steps=11 score=0.908 rewards=0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.01,0.01,0.01,0.90
+[START] task=hard env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"experiment_notes"} reward=0.02 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"validation_strategy"} reward=0.02 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"run_history"} reward=0.02 done=false error=null
+[STEP] step=10 action={"type":"flag","violation_type":"V1","evidence_artifact":"preprocessing","evidence_quote":"scaler.fit_transform(X_all)","severity":"high"} reward=0.15 done=false error=null
+[STEP] step=11 action={"type":"flag","violation_type":"V4","evidence_artifact":"split_config","evidence_quote":"train_ids_sample\": [\n    1,\n    2,\n    3,\n    4,\n    5,\n    6,\n    7,\n    8,\n    9,\n    10,\n    11,\n    12,\n    13,\n    14,\n    15,\n    16,\n    17,\n    18,\n    19,\n    20,\n    21,\n    22,\n    23,\n    24,\n    25,\n    26,\n    27,\n    28,\n    29,\n    30,\n    31,\n    32,\n    33,\n    34,\n    35,\n    36,\n    37,\n    38,\n    39,\n    40,\n    41,\n    42,\n    43,\n    44,\n    45,\n    46,\n    47,\n    48,\n    49,\n    50,\n    51,\n    52,\n    53,\n    54,\n    55,\n    56,\n    57,\n    58\n  ],\n  \"test_ids_sample\": [\n    1,\n    2,\n    3,\n    4,\n    5,\n    6,","severity":"high"} reward=0.15 done=false error=null
+[STEP] step=12 action={"type":"flag","violation_type":"V7","evidence_artifact":"experiment_notes","evidence_quote":"grouped entities exist; verify split strategy carefully.","severity":"high"} reward=-0.12 done=false error=null
+[STEP] step=13 action={"type":"submit","verdict":"reject","summary":"Three violations found: V1 (preprocessing leakage), V4 (train/test overlap), V7 (entity leakage)."} reward=0.47 done=true error=null
+[END] success=true steps=13 score=0.483 rewards=0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.15,0.15,-0.12,0.47
+--- STDERR ---
+Starting ML Audit inference...
+
+=== MODEL=o4-mini SEED=42 ATTEMPT=1 EXIT=0 ===
+[START] task=easy env=ml-audit-bench model=o4-mini
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"dataset_info"} reward=-0.01 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"preprocessing"} reward=-0.01 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"model_config"} reward=0.01 done=false error=null
+[STEP] step=7 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=0.03 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"training_logs"} reward=0.01 done=false error=null
+[STEP] step=9 action={"type":"submit","verdict":"pass","summary":"Reached step budget. Flags raised: none"} reward=0.00 done=true error=null
+[END] success=true steps=9 score=0.100 rewards=0.02,0.02,-0.01,-0.01,0.02,0.01,0.03,0.01,0.00
+[START] task=medium env=ml-audit-bench model=o4-mini
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"dataset_info"} reward=-0.01 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"preprocessing"} reward=-0.01 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=0.03 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"training_logs"} reward=0.01 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"run_history"} reward=0.01 done=false error=null
+[STEP] step=10 action={"type":"inspect","artifact":"experiment_notes"} reward=0.01 done=false error=null
+[STEP] step=11 action={"type":"inspect","artifact":"feature_engineering"} reward=0.01 done=false error=null
+[STEP] step=12 action={"type":"submit","verdict":"pass","summary":"No additional evidence. Flags: none"} reward=-0.01 done=true error=null
+[END] success=false steps=12 score=0.000 rewards=0.02,0.02,-0.01,-0.01,0.02,0.02,0.03,0.01,0.01,0.01,0.01,-0.01
+[START] task=hard env=ml-audit-bench model=o4-mini
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"dataset_info"} reward=-0.01 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"preprocessing"} reward=-0.01 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=0.03 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"run_history"} reward=0.02 done=false error=null
+[STEP] step=10 action={"type":"inspect","artifact":"experiment_notes"} reward=0.02 done=false error=null
+[STEP] step=11 action={"type":"submit","verdict":"pass","summary":"All artifacts inspected. Flags: none"} reward=0.94 done=true error=null
+[END] success=true steps=11 score=0.939 rewards=0.02,0.02,-0.01,-0.01,0.02,0.02,0.03,0.02,0.02,0.02,0.94
+--- STDERR ---
+Starting ML Audit inference...
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+
+=== MODEL=o4-mini SEED=42 ATTEMPT=2 EXIT=0 ===
+[START] task=easy env=ml-audit-bench model=o4-mini
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"dataset_info"} reward=-0.01 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"preprocessing"} reward=-0.01 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"model_config"} reward=0.01 done=false error=null
+[STEP] step=7 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=0.03 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"training_logs"} reward=0.01 done=false error=null
+[STEP] step=9 action={"type":"submit","verdict":"pass","summary":"Reached step budget. Flags raised: none"} reward=0.00 done=true error=null
+[END] success=true steps=9 score=0.100 rewards=0.02,0.02,-0.01,-0.01,0.02,0.01,0.03,0.01,0.00
+[START] task=medium env=ml-audit-bench model=o4-mini
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"dataset_info"} reward=-0.01 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"preprocessing"} reward=-0.01 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=0.03 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"training_logs"} reward=0.01 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"run_history"} reward=0.01 done=false error=null
+[STEP] step=10 action={"type":"inspect","artifact":"experiment_notes"} reward=0.01 done=false error=null
+[STEP] step=11 action={"type":"inspect","artifact":"feature_engineering"} reward=0.01 done=false error=null
+[STEP] step=12 action={"type":"submit","verdict":"pass","summary":"No additional evidence. Flags: none"} reward=-0.01 done=true error=null
+[END] success=false steps=12 score=0.000 rewards=0.02,0.02,-0.01,-0.01,0.02,0.02,0.03,0.01,0.01,0.01,0.01,-0.01
+[START] task=hard env=ml-audit-bench model=o4-mini
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"dataset_info"} reward=-0.01 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"preprocessing"} reward=-0.01 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=0.03 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"run_history"} reward=0.02 done=false error=null
+[STEP] step=10 action={"type":"inspect","artifact":"experiment_notes"} reward=0.02 done=false error=null
+[STEP] step=11 action={"type":"submit","verdict":"pass","summary":"All artifacts inspected. Flags: none"} reward=0.94 done=true error=null
+[END] success=true steps=11 score=0.939 rewards=0.02,0.02,-0.01,-0.01,0.02,0.02,0.03,0.02,0.02,0.02,0.94
+--- STDERR ---
+Starting ML Audit inference...
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+
+=== MODEL=o4-mini SEED=43 ATTEMPT=1 EXIT=0 ===
+[START] task=easy env=ml-audit-bench model=o4-mini
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"dataset_info"} reward=-0.01 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"preprocessing"} reward=-0.01 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"model_config"} reward=0.01 done=false error=null
+[STEP] step=7 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=0.03 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"training_logs"} reward=0.01 done=false error=null
+[STEP] step=9 action={"type":"submit","verdict":"pass","summary":"Reached step budget. Flags raised: none"} reward=0.00 done=true error=null
+[END] success=true steps=9 score=0.160 rewards=0.02,0.02,-0.01,-0.01,0.02,0.01,0.03,0.01,0.00
+[START] task=medium env=ml-audit-bench model=o4-mini
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"dataset_info"} reward=-0.01 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"preprocessing"} reward=-0.01 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=0.03 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"training_logs"} reward=0.01 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"run_history"} reward=0.01 done=false error=null
+[STEP] step=10 action={"type":"inspect","artifact":"experiment_notes"} reward=0.01 done=false error=null
+[STEP] step=11 action={"type":"submit","verdict":"pass","summary":"All artifacts inspected. Flags: none"} reward=0.90 done=true error=null
+[END] success=true steps=11 score=0.908 rewards=0.02,0.02,-0.01,-0.01,0.02,0.02,0.03,0.01,0.01,0.01,0.90
+[START] task=hard env=ml-audit-bench model=o4-mini
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"dataset_info"} reward=-0.01 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"preprocessing"} reward=-0.01 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=0.03 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"run_history"} reward=0.02 done=false error=null
+[STEP] step=10 action={"type":"inspect","artifact":"experiment_notes"} reward=0.02 done=false error=null
+[STEP] step=11 action={"type":"inspect","artifact":"feature_engineering"} reward=0.02 done=false error=null
+[STEP] step=12 action={"type":"submit","verdict":"pass","summary":"All artifacts inspected. Flags: none"} reward=0.92 done=true error=null
+[END] success=true steps=12 score=0.933 rewards=0.02,0.02,-0.01,-0.01,0.02,0.02,0.03,0.02,0.02,0.02,0.02,0.92
+--- STDERR ---
+Starting ML Audit inference...
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+
+=== MODEL=o4-mini SEED=44 ATTEMPT=1 EXIT=0 ===
+[START] task=easy env=ml-audit-bench model=o4-mini
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"dataset_info"} reward=-0.01 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"preprocessing"} reward=-0.01 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"model_config"} reward=0.01 done=false error=null
+[STEP] step=7 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=0.03 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"training_logs"} reward=0.01 done=false error=null
+[STEP] step=9 action={"type":"submit","verdict":"pass","summary":"Reached step budget. Flags raised: none"} reward=0.00 done=true error=null
+[END] success=true steps=9 score=0.160 rewards=0.02,0.02,-0.01,-0.01,0.02,0.01,0.03,0.01,0.00
+[START] task=medium env=ml-audit-bench model=o4-mini
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"dataset_info"} reward=-0.01 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"preprocessing"} reward=-0.01 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=0.03 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"training_logs"} reward=0.01 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"run_history"} reward=0.01 done=false error=null
+[STEP] step=10 action={"type":"inspect","artifact":"experiment_notes"} reward=0.01 done=false error=null
+[STEP] step=11 action={"type":"inspect","artifact":"feature_engineering"} reward=0.01 done=false error=null
+[STEP] step=12 action={"type":"submit","verdict":"pass","summary":"No additional evidence. Flags: none"} reward=0.89 done=true error=null
+[END] success=true steps=12 score=0.900 rewards=0.02,0.02,-0.01,-0.01,0.02,0.02,0.03,0.01,0.01,0.01,0.01,0.89
+[START] task=hard env=ml-audit-bench model=o4-mini
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"dataset_info"} reward=-0.01 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"preprocessing"} reward=-0.01 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=0.03 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"run_history"} reward=0.02 done=false error=null
+[STEP] step=10 action={"type":"inspect","artifact":"experiment_notes"} reward=0.02 done=false error=null
+[STEP] step=11 action={"type":"submit","verdict":"pass","summary":"All artifacts inspected. Flags: none"} reward=0.04 done=true error=null
+[END] success=true steps=11 score=0.039 rewards=0.02,0.02,-0.01,-0.01,0.02,0.02,0.03,0.02,0.02,0.02,0.04
+--- STDERR ---
+Starting ML Audit inference...
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+LLM request failed: Completions.create() got an unexpected keyword argument 'max_completion_tokens'
+
