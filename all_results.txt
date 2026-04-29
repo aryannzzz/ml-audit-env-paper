@@ -1,0 +1,254 @@
+================================================================================
+MLAuditBench — Aggregated Evaluation Results
+Compiled: 2026-04-28
+Sources: eval_results.json, eval_logs/baseline_stats.json,
+         results/ablation_threshold.json, logs/baseline_summary.json,
+         logs/baseline_results.jsonl, logs/inference_*.{txt,csv,tex},
+         human_evaluation.txt, human_evaluation_kit/04_scoring_and_reporting.md
+================================================================================
+
+
+================================================================================
+1. PRIMARY 10-SEED EVALUATION  (eval_results.json)
+================================================================================
+Models: GPT-4.1-mini (fast), GPT-4.1 (balanced), o4-mini (reasoning)
+Seeds : 42, 43, 44, 45, 46, 47, 48, 49, 50, 51
+Notes : Seeds 45-46 are the "primary / clean eval" seeds (no structural
+        outliers, run with the final inference.py); seeds 49-51 added
+        2026-04-23.
+
+--------------------------------------------------------------------------------
+1.1  GPT-4.1-mini (fast)
+--------------------------------------------------------------------------------
+Tier   | Mean   | Std    | n  | Per-seed (42..51)
+easy   | 0.530  | 0.390  | 10 | 0.900 0.900 0.160 0.900 0.900 0.160 0.900 0.160 0.160 0.160
+medium | 0.5711 | 0.3398 | 10 | 0.500 0.917 0.908 0.917 0.908 0.633 0.508 0.160 0.160 0.100
+hard   | 0.6293 | 0.3516 | 10 | 0.900 0.939 0.483 0.944 0.944 0.478 0.539 0.000 0.906 0.160
+
+--------------------------------------------------------------------------------
+1.2  GPT-4.1 (balanced)
+--------------------------------------------------------------------------------
+Tier   | Mean   | Std    | n  | Per-seed (42..51)
+easy   | 0.5924 | 0.4073 | 10 | 0.900 0.062 0.160 0.900 0.900 0.160 0.900 0.100 0.900 0.942
+medium | 0.6880 | 0.3651 | 10 | 0.900 0.138 0.908 0.248 0.908 0.900 0.900 0.939 0.939 0.100
+hard   | 0.6620 | 0.3781 | 10 | 0.944 0.939 0.483 0.944 0.944 0.561 0.833 0.000 0.933 0.039
+
+--------------------------------------------------------------------------------
+1.3  o4-mini (reasoning)
+--------------------------------------------------------------------------------
+Tier   | Mean   | Std    | n  | Per-seed (42..51)
+easy   | 0.6042 | 0.3957 | 10 | 0.912 0.938 0.900 0.900 0.912 0.900 0.100 0.160 0.160 0.160
+medium | 0.6256 | 0.3952 | 10 | 0.558 0.240 0.908 0.917 0.917 0.900 0.008 0.900 0.908 0.000
+hard   | 0.5283 | 0.4490 | 10 | 0.961 0.906 0.483 0.928 0.944 0.011 0.039 0.039 0.933 0.039
+
+--------------------------------------------------------------------------------
+1.4  Primary (clean eval) seeds 45-46  (final inference.py)
+--------------------------------------------------------------------------------
+Agent                | Easy            | Medium            | Hard            | Avg
+GPT-4.1-mini (fast)  | 0.900 +/- 0.000 | 0.913 +/- 0.006   | 0.944 +/- 0.000 | 0.919
+GPT-4.1 (balanced)   | 0.900 +/- 0.000 | 0.578 +/- 0.467   | 0.944 +/- 0.000 | 0.807
+o4-mini (reasoning)  | 0.906 +/- 0.008 | 0.917 +/- 0.000   | 0.936 +/- 0.011 | 0.920
+Random agent         | ~0.16           | ~0.16             | ~0.15           | ~0.16
+
+
+================================================================================
+2. EARLIER 3-SEED PRE-FIX BASELINE  (logs/baseline_summary.json,
+   eval_logs/baseline_stats.json)  Seeds 0,1,2 -- pre per-tier RNG fix.
+================================================================================
+27 episodes across 3 OpenAI models x 3 seeds x 3 tiers.
+
+Per-(model, tier) summary (mean, std, mean_steps):
+gpt-4.1-mini | easy   | n=3 | mean=0.4893 | std=0.4104 | mean_steps=5.7  | min=0.240 | max=0.963
+gpt-4.1-mini | medium | n=3 | mean=0.6387 | std=0.5531 | mean_steps=6.3  | min=0.000 | max=0.958
+gpt-4.1-mini | hard   | n=3 | mean=0.4283 | std=0.2998 | mean_steps=16.3 | min=0.086 | max=0.644
+gpt-4.1      | easy   | n=3 | mean=0.5393 | std=0.3688 | mean_steps=4.3  | min=0.290 | max=0.963
+gpt-4.1      | medium | n=3 | mean=0.7213 | std=0.4099 | mean_steps=7.0  | min=0.248 | max=0.958
+gpt-4.1      | hard   | n=3 | mean=0.5613 | std=0.2772 | mean_steps=11.3 | min=0.279 | max=0.833
+o4-mini      | easy   | n=3 | mean=0.4277 | std=0.4636 | mean_steps=7.0  | min=0.160 | max=0.963
+o4-mini      | medium | n=3 | mean=0.6867 | std=0.4561 | mean_steps=8.3  | min=0.160 | max=0.950
+o4-mini      | hard   | n=3 | mean=0.4780 | std=0.4348 | mean_steps=14.0 | min=0.106 | max=0.956
+
+Per-model violation-type recall observed in traces:
+  gpt-4.1-mini: V1 0.556, V2 0.444, V3 0.667, V4 0.222, V5 0.222, V6 0.111, V7 0.222
+  gpt-4.1     : V1 0.333, V2 0.333, V3 0.333, V4 0.111, V5 0.222, V6 0.111, V7 0.111
+  o4-mini     : V1 0.333, V2 0.222, V7 0.111  (other violations not flagged)
+
+Other models attempted in early sweep (3 seeds each, all-zeros indicate
+provider outages or schema-rejection -- excluded from headline numbers):
+  o3            : easy 0.000, medium 0.333, hard 0.356
+  gemini-2.0-flash: easy 0.300, medium 0.000, hard 0.000
+  gemini-2.5-pro: 0.000 across all tiers (quota / parsing failure)
+  qwen-2.5-72b  : 0.000 across all tiers (HF Inference Router quota)
+  qwen-qwq-32b  : 0.000 across all tiers (HF Inference Router quota)
+
+
+================================================================================
+3. EVIDENCE-MATCHING THRESHOLD ABLATION  (results/ablation_threshold.json)
+================================================================================
+Layer-3 (token-overlap) threshold swept over {0.6, 0.7, 0.8, 0.9, 1.0}.
+Layers 1 (exact) and 2 (whitespace-normalized) are threshold-independent.
+
+Avg score per model under each threshold:
+Threshold | GPT-4.1-mini | GPT-4.1 | o4-mini
+0.6       | 0.7416       | 0.7032  | 0.6913
+0.7       | 0.7360       | 0.6976  | 0.6857
+0.8       | 0.7304       | 0.6920  | 0.6801   <- baseline
+0.9       | 0.7191       | 0.6807  | 0.6690
+1.0       | 0.7079       | 0.6695  | 0.6588
+
+Conclusion: Model rankings (mini > balanced > reasoning) are stable across
+all five thresholds; the 0.80 baseline choice is robust. Score sensitivity
+is monotone and small (~0.034 swing across the full range).
+
+
+================================================================================
+4. INFERENCE-SCRIPT LIFECYCLE  (logs/inference_summary_20260419.txt,
+   logs/inference_end_scores_*.csv)
+================================================================================
+2026-04-19 (older inference.py, seeds 42-44):
+  MODEL          EASY                 MEDIUM               HARD                  AVG    STD(easy)
+  gpt-4.1-mini   0.900, 0.900, 0.160  0.900, 0.917, 0.908  0.028, 0.939, 0.483   0.682  0.427
+  gpt-4.1        0.900, 0.900, 0.240  0.900, 0.240, 0.908  0.944, 0.939, 0.483   0.717  0.381
+  o4-mini        0.100, 0.160, 0.160  0.000, 0.908, 0.900  0.939, 0.933, 0.039   0.460  0.035
+  -> o4-mini suffers from chain-of-thought paraphrase fabrication on easy
+     (0.100 at seed 42 despite a correct verdict).
+
+2026-04-20 (final inference.py, seeds 42-44):
+  gpt-4.1-mini,42 : easy 0.900 medium 0.500 hard 0.900
+  gpt-4.1-mini,43 : easy 0.900 medium 0.917 hard 0.939   (1 retry)
+  gpt-4.1-mini,44 : easy 0.160 medium 0.908 hard 0.483
+  gpt-4.1     ,42 : easy 0.900 medium 0.900 hard 0.944
+  gpt-4.1     ,43 : easy 0.062 medium 0.138 hard 0.939
+  gpt-4.1     ,44 : easy 0.160 medium 0.908 hard 0.483
+  o4-mini     ,42 : easy 0.912 medium 0.558 hard 0.961
+  o4-mini     ,43 : easy 0.938 medium 0.240 hard 0.906
+  o4-mini     ,44 : easy 0.900 medium 0.908 hard 0.483
+
+The 2026-04-20 release recovered o4-mini easy from 0.100 -> 0.912 at seed 42,
+confirming the verbatim-evidence guidance was the binding constraint.
+
+
+================================================================================
+5. PER-EPISODE BASELINE TRACES  (logs/baseline_results.jsonl, 32 lines)
+================================================================================
+First 10 episodes (gpt-4.1-mini, seeds 42-44):
+  easy   42  score=0.963  steps=3
+  easy   43  score=0.265  steps=6
+  easy   44  score=0.240  steps=8
+  medium 42  score=0.250  steps=10
+  medium 43  score=0.080  steps=13
+  medium 44  score=0.633  steps=12
+  hard   42  score=0.555  steps=18
+  hard   43  score=0.086  steps=15
+  hard   44  score=0.644  steps=16
+(Episodes generated 2026-04-11; superseded by the final-inference.py runs above.)
+
+
+================================================================================
+6. HUMAN BASELINE  (human_evaluation.txt + human_evaluation_kit/)
+================================================================================
+Population        : ML-trained human participants (BTech / early-grad ML).
+Constraint match  : Identical action schema, step budgets, and grader as
+                    the LLM agents (no internet, no facilitator hints,
+                    no ground-truth access).
+Seeds             : 10 per tier, drawn independently per tier (the seed
+                    set used for easy is *not* identical to that used for
+                    medium or hard, by design, to avoid one unlucky draw
+                    dominating the headline number).
+
+Aggregate score (mean +/- std):
+  Easy   : 0.82 +/- 0.13   (n=10 seeds)
+  Medium : 0.86 +/- 0.09   (n=10 seeds)
+  Hard   : 0.57 +/- 0.34   (n=10 seeds)
+  Overall: ~0.75 (unweighted mean of tier means)
+
+Comparison vs primary-seed (45-46) automated baselines:
+  Tier   | Human         | GPT-4.1-mini | GPT-4.1 | o4-mini
+  Easy   | 0.82 +/- 0.13 | 0.900        | 0.900   | 0.906
+  Medium | 0.86 +/- 0.09 | 0.913        | 0.578   | 0.917
+  Hard   | 0.57 +/- 0.34 | 0.944        | 0.944   | 0.936
+
+Comparison vs full 10-seed automated means:
+  Tier   | Human         | GPT-4.1-mini | GPT-4.1 | o4-mini
+  Easy   | 0.82 +/- 0.13 | 0.530        | 0.592   | 0.604
+  Medium | 0.86 +/- 0.09 | 0.571        | 0.688   | 0.626
+  Hard   | 0.57 +/- 0.34 | 0.629        | 0.662   | 0.528
+
+Observations:
+  * Humans dominate on the medium tier (cross-artifact reasoning) and are
+    on par with frontier LLMs on easy.
+  * Humans show the largest variance on hard (0.34) -- compound violations
+    plus red herrings cause split outcomes (some participants nail all 3
+    violations; others miss one and submit early).
+  * On the full 10-seed average, humans outperform every automated agent
+    on easy and medium; LLMs only win on hard, partly because primary
+    seeds (45-46) draw favourable hard episodes for the automated agents.
+  * Single-seed Claude Sonnet 4.6 interactive audit (seed 42 only):
+    easy 0.963, medium 0.950, hard 0.950 -- expert-level upper bound.
+
+
+================================================================================
+7. STRUCTURAL OUTLIERS / FAILURE MODES IDENTIFIED IN LOGS
+================================================================================
+(a) Cross-tier RNG correlation (pre-fix v1.0):
+    random.seed(seed) without per-tier offset caused identical episode
+    indices across easy/medium/hard. Seed 43 drew timeseries_reg_104
+    (clean) for all three tiers simultaneously. Fix: per-tier offsets
+    (easy=0, medium=10000, hard=20000). Empirical effect on GPT-4.1-mini
+    medium variance: pre-fix sigma=0.553 -> post-fix (seeds 42-44) sigma=0.009.
+
+(b) V3 false-positive trap on clean timeseries_reg_104:
+    feature-engineering snippet referenced X_train['energy_demand_kwh']
+    (the target), causing every model to correctly raise V3 on a
+    nominally clean episode. Replaced with weather-lag features.
+
+(c) Duplicate flag penalty:
+    Models occasionally re-flagged the same violation type after a
+    partial reward. Each duplicate cost -0.10. Mitigation: tracked
+    flagged_violation_types set in inference.py.
+
+(d) Evidence-quote fabrication (reasoning models):
+    o4-mini at seed 42 (older inference.py) submitted correct verdict
+    with paraphrased quote -> failed three-layer matcher, scored 0.10.
+    Mitigation: 10-60 char verbatim guidance + 6 surfaced excerpts
+    + flagless-reject downgrade. Post-fix: 0.912 at seed 42.
+
+(e) Adversarial clean-episode concentration on easy tier:
+    Seeds 44, 47, 49, 50, 51 all draw clean episodes on easy -> every
+    model scores 0.160 (verdict-bonus only, since they submitted reject).
+    Five out of ten seeds at the headline-tier is the largest single
+    source of per-seed variance -- and is by design.
+
+(f) o4-mini self-consistent hallucination (seed 48):
+    Easy 0.100, medium 0.008, hard 0.039 -- the chain-of-thought
+    iteratively reinforces an incorrect initial hypothesis (e.g.
+    misreading GroupShuffleSplit as entity leakage) and produces
+    fabricated quotes consistent with that hypothesis. Each
+    fabrication costs -0.05; the episode collapses.
+
+
+================================================================================
+8. RANDOM-AGENT BASELINE
+================================================================================
+Random uniform-action agent (uniform over the 5 typed actions, with
+random artifact / violation choice within each):
+  easy ~0.16, medium ~0.16, hard ~0.15  (mean ~0.16).
+
+Effect size (GPT-4.1-mini vs random, primary seeds):  Delta = 0.76
+Effect size (Human vs random, all tiers):             Delta = 0.59 - 0.70
+
+
+================================================================================
+9. COMPUTE / COST  (single full three-tier pass)
+================================================================================
+* Tokens     : ~15,000 - 30,000 per pass (LLM API).
+* Wall-clock : 30 - 90 s per episode (model-dependent).
+* USD        : $0.01 - $0.05 per pass at GPT-4.1-class pricing.
+* Server     : CPU-only HF Space, 2 vCPUs / 16 GB RAM.
+* Preliminary / debugging compute: ~10x the reported evaluation total
+  (prompt tuning + bug-fixing iterations).
+
+
+================================================================================
+END OF AGGREGATED RESULTS
+================================================================================
