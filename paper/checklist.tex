@@ -69,7 +69,7 @@
 \item {\bf Experimental setting/details}
     \item[] Question: Does the paper specify all the training and test details (e.g., data splits, hyperparameters, how they were chosen, type of optimizer) necessary to understand the results?
     \item[] Answer: \answerYes{}
-    \item[] Justification: \S5 documents model identifiers, API providers, inference seeds (42--44), temperature (0 for deterministic models), step budgets per tier, and the complete scoring formula. No training is performed; evaluation uses frozen LLMs via API.
+    \item[] Justification: \S5 documents model identifiers, API providers, inference seeds (42--51), temperature (0 for deterministic models), step budgets per tier, and the complete scoring formula. No training is performed; evaluation uses frozen LLMs via API.
     \item[] Guidelines: \begin{itemize}
         \item The answer \answerNA{} means that the paper does not include experiments.
         \item The experimental setting should be presented in the core of the paper to a level of detail that is necessary to appreciate the results and make sense of them.
@@ -80,9 +80,11 @@
     \item[] Question: Does the paper report error bars suitably and correctly defined or other appropriate information about the statistical significance of the experiments?
     \item[] Answer: \answerYes{}
     \item[] Justification: Table~\ref{tab:baseline} reports mean $\pm$ std
-    across seeds 42--44 for all three model families. The standard deviation
-    captures episode-level variance from stochastic experiment selection.
-    The hard tier shows high variance due to the intentional mixture
+    across seeds 42--51 ($n{=}10$) for all three model families; the primary-seed
+    subset (seeds 45--46) reports $\pm$ std across $n{=}2$.  Bootstrap 95\%
+    confidence intervals are additionally reported in \S5.4.  The standard
+    deviation captures episode-level variance from stochastic experiment selection;
+    the hard tier shows high variance due to the intentional mixture
     distribution (\S3.5).
     \item[] Guidelines: \begin{itemize}
         \item The answer \answerNA{} means that the paper does not include experiments.
@@ -157,8 +159,15 @@
 
 \item {\bf Crowdsourcing and research with human subjects}
     \item[] Question: For crowdsourcing experiments and research with human subjects, does the paper include the full text of instructions given to participants and screenshots, if applicable, as well as details about compensation (if any)?
-    \item[] Answer: \answerNA{}
-    \item[] Justification: This benchmark does not involve crowdsourcing or human subject evaluation. All evaluations reported in the paper use LLM agents via API. No human participants were recruited, compensated, or asked to complete episodes.
+    \item[] Answer: \answerYes{}
+    \item[] Justification: The paper includes a 10-seed-per-tier ML-trained human baseline (\S5.3).
+    Participants were ML students (BTech / early-grad) recruited at the authors' institution.
+    The complete facilitator protocol, participant instructions, artifact packet specification,
+    scoring sheet, and debrief form are shipped in the repository
+    (\texttt{human\_evaluation\_kit/}).  Participation was voluntary, uncompensated beyond
+    course credit, and conducted under standard informed-consent procedures
+    (consent template included in the kit).  All data is synthetic; no PII was collected.
+    No crowdsourcing platform was used.
     \item[] Guidelines: \begin{itemize}
         \item The answer \answerNA{} means that the paper does not involve crowdsourcing nor research with human subjects.
         \item Including this information in the supplemental material is fine, but if the main contribution of the paper involves human subjects, then as much detail as possible should be included in the main paper.
@@ -179,8 +188,13 @@
 \item {\bf Declaration of LLM usage}
     \item[] Question: Does the paper describe the usage of LLMs if it is an important, original, or non-standard component of the core methods in this research?
     \item[] Answer: \answerYes{}
-    \item[] Justification: LLMs are the primary evaluated agents. \S5 documents all model identifiers: \texttt{gpt-4.1-mini} (fast/cheap), \texttt{gpt-4.1} (balanced), and
-    \texttt{o4-mini} (reasoning-optimised), all via the OpenAI API. LLMs were not used to write or edit the paper text.
+    \item[] Justification: LLMs are the primary evaluated agents.  \S5 documents all model identifiers:
+    \texttt{gpt-4.1-mini} (fast), \texttt{gpt-4.1} (balanced), and \texttt{o4-mini}
+    (reasoning-optimised), all via the OpenAI API;
+    \texttt{claude-sonnet-4-6} (interactive single-seed expert audit);
+    and \texttt{Qwen/Qwen2.5-72B-Instruct} via the HuggingFace Inference Router
+    (preliminary easy-tier only, excluded from headline numbers due to HF quota
+    constraints).  LLMs were not used to write or edit the paper text.
     \item[] Guidelines: \begin{itemize}
         \item The answer \answerNA{} means that the core method development in this research does not involve LLMs as any important, original, or non-standard components.
         \item Please refer to our LLM policy in the NeurIPS handbook for what should or should not be described.

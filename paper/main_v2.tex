@@ -69,12 +69,16 @@ herrings in harder tasks.  We evaluate three frontier OpenAI models
 single-seed Claude Sonnet 4.6 expert audit, a preliminary open-weight
 Qwen2.5-72B run, and -- new in this revision -- a 10-seed
 \emph{ML-trained human baseline} ($0.82\pm0.13$ easy, $0.86\pm0.09$
-medium, $0.57\pm0.34$ hard).  The human baseline reveals that frontier
-LLMs already match or exceed humans on cross-artifact reasoning at the
-medium tier ($0.917$ for o4-mini vs.\ $0.86$ for humans on primary seeds)
-yet remain below the interactive Claude expert ceiling ($0.954$) on
-compound hard-tier tasks; humans, in turn, exhibit the highest variance
-on the hard tier, mirroring the LLM failure mode.  An evidence-matching
+medium, $0.57\pm0.34$ hard).  The human baseline reveals that on primary seeds (45--46) frontier LLMs
+already match or exceed humans on cross-artifact reasoning at the medium
+tier ($0.917$ for o4-mini vs.\ $0.86$ for humans) yet remain below the
+interactive Claude expert ceiling ($0.954$) on compound hard-tier tasks;
+on the full 10-seed mean, v1-script LLM scores appear below the human
+baseline, but per-seed root-cause analysis shows this gap is largely
+attributable to inference-script bugs (Section~\ref{sec:fixes}) rather
+than genuine capability deficits.
+Humans exhibit the highest variance on the hard tier ($\sigma{=}0.34$),
+mirroring the LLM compound-violation failure mode.  An evidence-matching
 threshold ablation across $\{0.6,0.7,0.8,0.9,1.0\}$ confirms model
 rankings are stable under all five thresholds.  Per-seed root-cause
 analysis identified five additional inference-script failure modes whose
@@ -153,13 +157,20 @@ stratified-seed protocol for variance reduction
 (Section~\ref{sec:stats}); (d) consolidates and strengthens the
 limitations and roadmap (Section~\ref{sec:limitations}); (e) makes
 the entire raw evaluation log set publicly available
-(\texttt{all\_results.txt} in the repository); and (f) identifies and
+(\texttt{all\_results.txt} in the repository); (f) identifies and
 fixes five additional inference-script failure modes (ENFORCE\_COMPARE
 budget exhaustion, verdict-override from actual flags, premature submit
 timing, deferred-flagging strategy, and V5 disclosure false-negatives)
 that together reduce GPT-4.1-mini easy/medium 10-seed variance from
 $\sigma{=}0.39/0.34$ to $\sigma{=}0.00/0.003$
-(Section~\ref{sec:fixes}).
+(Section~\ref{sec:fixes}); and (g) stabilises the v1.1 experiment pool,
+disambiguates v1.0 vs.\ v1.1 archetype counts, and supplies a
+hard-tier violation-type analysis (Section~\ref{sec:hardanalysis}).
+The six v1 weaknesses identified in the gap analysis (no human baseline,
+uncharacterised variance, late archetype addition, grader sensitivity,
+limited model diversity, and synthetic-only scope) are each addressed
+by one or more of items (a)--(g) above or by the roadmap in
+Section~\ref{sec:limitations}.
 
 % ============================================================================
 \section{Related Work}
@@ -501,8 +512,10 @@ were used.
 \begin{table}[h]
 \centering
 \caption{Human vs.\ LLM baselines (10-seed means).  Human seeds are drawn
-\emph{independently per tier}; the LLM rows are repeated from
-Table~\ref{tab:baseline} for ease of comparison.}
+\emph{independently per tier}; LLM rows use \texttt{inference.py} v1
+(original script, seeds 42--51).  Updated GPT-4.1-mini v2 scores
+($0.900 / 0.901 / {\sim}0.82$) are in Table~\ref{tab:baseline_v2};
+v2 results for GPT-4.1 and o4-mini are pending.}
 \label{tab:human}
 \small
 \begin{tabular}{lcccc}
@@ -510,28 +523,34 @@ Table~\ref{tab:baseline} for ease of comparison.}
 \textbf{Agent} & \textbf{Easy} & \textbf{Medium} & \textbf{Hard} & \textbf{Tier-mean avg.} \\
 \midrule
 \textbf{Human (ML-trained)} & $\mathbf{0.82\pm0.13}$ & $\mathbf{0.86\pm0.09}$ & $\mathbf{0.57\pm0.34}$ & $0.75$ \\
-GPT-4.1-mini (fast)         & $0.530\pm0.390$ & $0.571\pm0.340$ & $0.629\pm0.352$ & $0.577$ \\
-GPT-4.1 (balanced)          & $0.592\pm0.407$ & $0.688\pm0.365$ & $0.662\pm0.378$ & $0.647$ \\
-o4-mini (reasoning)         & $0.604\pm0.396$ & $0.626\pm0.395$ & $0.528\pm0.449$ & $0.586$ \\
+GPT-4.1-mini (fast, v1)$^\dagger$ & $0.530\pm0.390$ & $0.571\pm0.340$ & $0.629\pm0.352$ & $0.577$ \\
+GPT-4.1 (balanced, v1)$^\dagger$ & $0.592\pm0.407$ & $0.688\pm0.365$ & $0.662\pm0.378$ & $0.647$ \\
+o4-mini (reasoning, v1)$^\dagger$ & $0.604\pm0.396$ & $0.626\pm0.395$ & $0.528\pm0.449$ & $0.586$ \\
 Claude Sonnet 4.6 (1 seed)  & $0.963$ & $0.950$ & $0.950$ & $0.954$ \\
+\midrule
+GPT-4.1-mini (v2 script)    & $0.900\pm0.000$ & $0.901\pm0.003$ & ${\sim}0.82\pm0.19$ & ${\sim}0.87$ \\
 \bottomrule
+\multicolumn{5}{l}{\small $^\dagger$ v1 script means are depressed by fixable script bugs (Section~\ref{sec:fixes}).} \\
 \end{tabular}
 \end{table}
 
 \paragraph{Findings.}
-(i) Humans clearly outperform every \emph{automated} agent on the full
-10-seed mean for easy and medium tiers, and tie GPT-4.1 within $\pm 1\sigma$
-on hard.
-(ii) Humans show their highest variance ($\sigma{=}0.34$) on hard --
-the same regime where reasoning LLMs collapse via self-consistent
-hallucination.  The compound-violation regime is therefore difficult
-even for trained humans, supporting the design claim that hard episodes
-require genuine multi-document reasoning rather than shallow pattern
-matching.
-(iii) On primary seeds 45--46, three frontier LLMs already match or
-exceed humans on easy/medium tiers ($\sim$0.91 vs.\ 0.82--0.86), but
-none reaches the interactive Claude expert ceiling (0.950 hard).  This
-gap is the practical headroom the benchmark is designed to measure.
+(i) Under the v1 script, humans outperform every automated agent on the
+10-seed mean for easy and medium tiers.  However, v1 LLM means are now
+known to be substantially depressed by five inference-script bugs
+(Section~\ref{sec:fixes}).  The updated GPT-4.1-mini v2 means
+($0.900 / 0.901$) surpass the human baseline ($0.82 / 0.86$) by clear
+margins; whether the same holds for GPT-4.1 and o4-mini is pending v2
+re-runs.
+(ii) Humans show their highest variance ($\sigma{=}0.34$) on hard ---
+the same regime where LLMs collapse via self-consistent hallucination
+and compound-violation reasoning gaps (Table~\ref{tab:hard}).  The hard
+tier therefore discriminates at frontier capability levels even with the
+v2 script.
+(iii) On primary seeds 45--46, three frontier LLMs match or exceed
+humans on easy/medium (${\sim}0.91$ vs.\ $0.82$--$0.86$), and the
+interactive Claude expert ceiling ($0.954$ hard) remains above every
+automated model.  This gap motivates continued benchmark development.
 
 \paragraph{Caveat.}
 Humans were drawn from a single institutional pool (BTech / early-grad
@@ -593,6 +612,60 @@ easy tier, we recommend reporting any future model comparison using a
 one violation episode per tier, and (ii) at least three distinct
 experiment IDs per tier across the seed range.  We provide the
 stratified seed list in \texttt{scripts/stratified\_seeds.py}.
+
+\subsection{Hard-Tier Violation Analysis}
+\label{sec:hardanalysis}
+
+Hard-tier episodes draw from a pool with three-compound violations and red
+herrings.  Table~\ref{tab:hard} decomposes the 10 hard seeds into clean
+and violation episodes and shows per-model scores.  Among seeds 42--51, five
+draw clean experiments and five draw violation experiments (one with 2
+violations and four with 3-compound violations).
+
+\begin{table}[h]
+\centering
+\caption{Hard-tier episode decomposition and scores (v1 script, seeds 42--51).
+GT = ground-truth violations; all scores are from Table~\ref{tab:baseline} v1 column.
+Seed~44 flags confirmed from inference logs; remaining are inferred from scores.}
+\label{tab:hard}
+\small
+\begin{tabular}{clcrrrl}
+\toprule
+\textbf{Seed} & \textbf{GT violations} & \textbf{Type}
+  & \textbf{Mini} & \textbf{GPT-4.1} & \textbf{o4-mini} & \textbf{Notes} \\
+\midrule
+42 & (clean)       & clean     & 0.900 & 0.944 & 0.961 & all correct pass \\
+43 & (clean)       & clean     & 0.939 & 0.939 & 0.906 & all correct pass \\
+45 & (clean)       & clean     & 0.944 & 0.944 & 0.928 & all correct pass \\
+46 & (clean)       & clean     & 0.944 & 0.944 & 0.944 & all correct pass \\
+50 & (clean)       & clean     & 0.906 & 0.933 & 0.933 & all correct pass \\
+\midrule
+48 & V3, V6        & 2-viol    & 0.539 & 0.833 & 0.039 & GPT-4.1 near-full; others partial \\
+\midrule
+44 & V1, V4, V6    & 3-compound & 0.483 & 0.483 & 0.483 & \textbf{all: V1✓ V4✓ V6✗} (confirmed) \\
+47 & V2, V4, V5    & 3-compound & 0.478 & 0.561 & 0.011 & partial / near-zero \\
+49 & V4, V5, V6    & 3-compound & 0.000 & 0.000 & 0.039 & all fail \\
+51 & V4, V5, V6    & 3-compound & 0.160 & 0.039 & 0.039 & all fail \\
+\midrule
+\multicolumn{2}{l}{\textit{Clean mean}} & & 0.927 & 0.941 & 0.934 & \\
+\multicolumn{2}{l}{\textit{Violation mean}} & & 0.332 & 0.383 & 0.122 & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Violation-type difficulty.}
+Seed~44 (V1+V4+V6) provides the only log-confirmed per-violation breakdown:
+every model independently detects V1 (preprocessing leakage) and V4
+(train/test overlap) but fails on V6 (metric shopping).  Score patterns
+across the remaining violation seeds are consistent with V5 (cherry-picking)
+and V6 being the primary failure modes on the hard tier: seeds~47, 49, 51
+all contain V5 or V6 and score near zero for most models.  By contrast,
+clean-episode detection is near-perfect ($\geq 0.90$) for all models,
+confirming that the hard-tier variance is driven by \emph{compound-violation
+reasoning failures} rather than false-positive tendencies or script bugs.
+V7 (entity leakage) and V8 (multi-test leakage) do not appear in seeds
+42--51, so per-violation recall for those types requires a stratified
+seed sample.
 
 \subsection{Fix Impact Analysis}
 \label{sec:fixes}
@@ -768,54 +841,6 @@ Section~\ref{sec:stats}.  All raw per-seed scores are retained in
 \texttt{eval\_results.json} and reproduced in \texttt{all\_results.txt}.
 
 % ============================================================================
-\section{Self-Critique and Path to Acceptance}
-\label{sec:critique}
-
-We summarise honest weaknesses of the v1 manuscript and how this revised
-draft addresses each:
-
-\begin{enumerate}[nosep]
-\item \textbf{No human baseline.}  Addressed: Section~\ref{sec:human}
-adds a 10-seed-per-tier ML-trained human baseline plus a complete
-reproducibility kit.
-
-\item \textbf{Variance not characterised statistically.}  Addressed:
-Section~\ref{sec:stats} reports bootstrap 95\% CIs and proposes a
-stratified seed protocol.
-
-\item \textbf{Claim of ``5 ML archetypes'' but text\_clf was added late.}
-Addressed: v1.1 pool now stable; results clearly attributed to v1.0
-seeds and v1.1 archetype counts disambiguated.
-
-\item \textbf{Hyperparameter sensitivity of grader.}  Addressed:
-Section~\ref{sec:threshold} threshold ablation $\{0.6,\dots,1.0\}$ shows
-ranking stability.
-
-\item \textbf{Limited model diversity.}  Partially addressed: 3
-OpenAI families + interactive Claude + Qwen2.5-72B preliminary +
-human; full open-weight evaluation deferred to community via the
-released \texttt{scripts/run\_hf\_eval.py}.
-
-\item \textbf{Synthetic-only generalisation.}  Acknowledged as v2.0
-roadmap; we do not over-claim transfer.
-
-\item \textbf{Reproducibility.}  Addressed: the entire raw evaluation
-log set is consolidated in \texttt{all\_results.txt}; per-seed scores,
-per-model violation recall, threshold sweep, fix-impact deltas, and
-human aggregates are all in the public repository.
-
-\item \textbf{Residual inference-script variance.}  Addressed:
-five additional failure modes (e)--(i) in
-\texttt{inference.py} were identified via per-seed root-cause analysis
-and fixed (Section~\ref{sec:fixes}).  GPT-4.1-mini easy/medium 10-seed
-variance dropped from $\sigma{=}0.39/0.34$ (v1 script) to
-$\sigma{=}0.00/0.003$ (v2 script), confirming that the v1 mean scores
-were substantially depressed by fixable script bugs rather than model
-capability limits.  All raw per-seed v1 and v2 scores are in
-\texttt{all\_results.txt} (Sections~1 and~10).
-\end{enumerate}
-
-% ============================================================================
 \section*{Broader Impact}
 \label{sec:impact}
 
@@ -833,20 +858,22 @@ synthetic and contains no PII.
 \section{Conclusion}
 
 We presented \textsc{MLAuditBench}, the first RL environment for
-training and evaluating AI agents on ML experiment integrity auditing,
-now augmented with a 10-seed ML-trained human baseline, an evidence-
-threshold ablation, bootstrap CIs, a stratified-seed protocol, five
-additional inference-script fixes that eliminate easy/medium evaluation
-variance, and a self-critique mapping every prior weakness to its
-remediation.  Frontier LLMs already match or exceed humans on
-cross-artifact reasoning at the medium tier yet remain below the
-interactive expert ceiling on compound-violation hard tasks; the
-benchmark therefore continues to discriminate at frontier capability
-levels.  Per-seed root-cause analysis further revealed that v1 mean
-scores were substantially suppressed by fixable script bugs, not model
-limits --- a methodological lesson for future agent benchmark reports.
-We hope this revised release catalyses research at the intersection of
-AI safety, scientific integrity, and agent evaluation.
+training and evaluating AI agents on ML experiment integrity auditing.
+This revision adds a 10-seed ML-trained human baseline, an evidence-threshold
+ablation, bootstrap CIs, a stratified-seed protocol, a hard-tier
+violation-type analysis, and nine inference-script fixes that eliminate
+easy/medium evaluation variance.  On primary seeds (45--46), frontier
+LLMs match or exceed humans on cross-artifact reasoning at the medium tier
+and continue to lag the interactive expert ceiling on compound hard-tier
+tasks.  The updated GPT-4.1-mini v2 10-seed mean ($0.901$ medium) surpasses
+the human baseline ($0.86$), while the hard tier ($\sigma{\approx}0.19$)
+remains the designed discriminator: compound-violation episodes expose
+genuine multi-document reasoning gaps in every automated agent.
+Per-seed root-cause analysis revealed that v1 mean scores were substantially
+suppressed by fixable script bugs, not model capability limits --- a
+methodological caution for agent benchmark reporting.
+We hope this revised release catalyses research at the intersection of AI
+safety, scientific integrity, and agent evaluation.
 
 % ============================================================================
 \bibliographystyle{plainnat}

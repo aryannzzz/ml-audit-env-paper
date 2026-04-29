@@ -378,5 +378,35 @@ All 9 edits are in inference.py (v2 / 2026-04-29).
 eval_results.json preserves the original (v1) scores for reproducibility.
 
 ================================================================================
+11. GPT-4.1 (balanced) v2 RESULTS  [PENDING — requires OPENAI_API_KEY]
+================================================================================
+Run command (once key is available):
+  export OPENAI_API_KEY="sk-proj-..."
+  bash scripts/run_v2_eval.sh
+  python3 scripts/parse_v2_results.py logs/v2_gpt41_<ts>.txt
+
+Expected outcome based on v2 script fixes:
+  - Clean-episode seeds (where GPT-4.1 previously scored 0.160-0.900) should
+    stabilise to 0.900 via the verdict-override fix (f).
+  - Seeds 47/48/51 (medium) should improve from 0.561/0.833/0.039 to ~0.900
+    via ENFORCE_COMPARE guard (e).
+  - Easy tier expected to reach ~0.900 ± 0.000 as with GPT-4.1-mini.
+
+================================================================================
+12. o4-mini (reasoning) v2 RESULTS  [PENDING — requires OPENAI_API_KEY]
+================================================================================
+Run command:
+  bash scripts/run_v2_eval.sh   # runs both models
+  python3 scripts/parse_v2_results.py logs/v2_o4mini_<ts>.txt
+
+Expected outcome:
+  - o4-mini self-consistent hallucination (seed 48: easy 0.100, medium 0.008,
+    hard 0.039) is a model-level failure mode unrelated to the 9 script fixes;
+    hallucination-prone seeds may not improve with v2 script alone.
+  - Clean-episode scores should improve from 0.160 to 0.900 via fix (f).
+  - Evidence-fabrication seeds (where quoted text fails the 3-layer matcher)
+    require prompt-level rather than script-level remediation.
+
+================================================================================
 END OF AGGREGATED RESULTS
 ================================================================================
