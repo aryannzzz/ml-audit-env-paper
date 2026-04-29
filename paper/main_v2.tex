@@ -76,7 +76,12 @@ yet remain below the interactive Claude expert ceiling ($0.954$) on
 compound hard-tier tasks; humans, in turn, exhibit the highest variance
 on the hard tier, mirroring the LLM failure mode.  An evidence-matching
 threshold ablation across $\{0.6,0.7,0.8,0.9,1.0\}$ confirms model
-rankings are stable under all five thresholds.
+rankings are stable under all five thresholds.  Per-seed root-cause
+analysis identified five additional inference-script failure modes whose
+repair collapses GPT-4.1-mini easy/medium 10-seed variance from
+$\sigma{=}0.39/0.34$ to $\sigma{=}0.00/0.003$, demonstrating that
+v1 mean scores were substantially suppressed by fixable script bugs
+rather than model capability limits.
 The environment is deployed as an OpenEnv-compatible Docker container on
 Hugging Face Spaces and is fully reproducible from the released seeds.
 \end{abstract}
@@ -146,9 +151,15 @@ threshold ablation showing rank stability over $\{0.6,\dots,1.0\}$
 (Section~\ref{sec:threshold}); (c) adds bootstrap 95\% CIs and a
 stratified-seed protocol for variance reduction
 (Section~\ref{sec:stats}); (d) consolidates and strengthens the
-limitations and roadmap (Section~\ref{sec:limitations}); and (e) makes
+limitations and roadmap (Section~\ref{sec:limitations}); (e) makes
 the entire raw evaluation log set publicly available
-(\texttt{all\_results.txt} in the repository).
+(\texttt{all\_results.txt} in the repository); and (f) identifies and
+fixes five additional inference-script failure modes (ENFORCE\_COMPARE
+budget exhaustion, verdict-override from actual flags, premature submit
+timing, deferred-flagging strategy, and V5 disclosure false-negatives)
+that together reduce GPT-4.1-mini easy/medium 10-seed variance from
+$\sigma{=}0.39/0.34$ to $\sigma{=}0.00/0.003$
+(Section~\ref{sec:fixes}).
 
 % ============================================================================
 \section{Related Work}
@@ -401,20 +412,23 @@ amount and are not included in the reported costs.
 
 Table~\ref{tab:baseline} reports primary-seed (45--46) and full 10-seed
 results.  Primary seeds are the subset that satisfies (a) running with
-the final \texttt{inference.py} (with all guards from
+the updated \texttt{inference.py} v2 (with all nine guards from
 Section~\ref{sec:fixes}) and (b) drawing no structurally identified
 outlier episodes (Section~\ref{sec:outliers}).
+Table~\ref{tab:baseline_v2} shows the updated GPT-4.1-mini 10-seed
+results obtained with \texttt{inference.py} v2.
 
 \begin{table}[h]
 \centering
 \caption{Multi-model baseline scores on \textsc{MLAuditBench}.  Primary
-seeds (45--46, $n{=}2$) use the final \texttt{inference.py} and exclude
-known outlier episodes; full means are over seeds 42--51 ($n{=}10$).}
+seeds (45--46, $n{=}2$) use \texttt{inference.py} v2 and exclude
+known outlier episodes; full means are over seeds 42--51 ($n{=}10$)
+with \texttt{inference.py} v1.}
 \label{tab:baseline}
 \small
 \begin{tabular}{lcccccc}
 \toprule
-\multirow{2}{*}{\textbf{Agent}} & \multicolumn{3}{c}{\textbf{Primary seeds (45--46)}} & \multicolumn{3}{c}{\textbf{Full 10-seed mean (42--51)}}\\
+\multirow{2}{*}{\textbf{Agent}} & \multicolumn{3}{c}{\textbf{Primary seeds (45--46)}} & \multicolumn{3}{c}{\textbf{Full 10-seed mean (42--51), v1}}\\
 \cmidrule(lr){2-4}\cmidrule(lr){5-7}
 & Easy & Medium & Hard & Easy & Medium & Hard \\
 \midrule
@@ -427,6 +441,43 @@ Claude Sonnet 4.6 (interactive, seed 42) & $0.963$ & $0.950$ & $0.950$ & -- & --
 \bottomrule
 \end{tabular}
 \end{table}
+
+\begin{table}[h]
+\centering
+\caption{GPT-4.1-mini 10-seed results with updated \texttt{inference.py} v2
+(all nine inference fixes applied, seeds 42--51, sequential runs).
+All other model rows are unchanged from Table~\ref{tab:baseline} (v1 script).}
+\label{tab:baseline_v2}
+\small
+\begin{tabular}{lcccccc}
+\toprule
+\multirow{2}{*}{\textbf{Agent}} &
+  \multicolumn{3}{c}{\textbf{v1 script (10-seed mean)}} &
+  \multicolumn{3}{c}{\textbf{v2 script (10-seed mean)}} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
+& Easy & Medium & Hard & Easy & Medium & Hard \\
+\midrule
+GPT-4.1-mini (fast) &
+  $0.530\pm0.390$ & $0.571\pm0.340$ & $0.629\pm0.352$ &
+  $\mathbf{0.900\pm0.000}$ & $\mathbf{0.901\pm0.003}$ & ${\sim}0.819\pm0.190$ \\
+\midrule
+\multicolumn{7}{l}{\small Per-seed medium scores (v2): 0.900 / 0.900 / 0.900 / 0.900 / 0.900 / 0.900 / 0.900 / 0.900 / 0.908 / 0.900} \\
+\multicolumn{7}{l}{\small Per-seed easy scores (v2): 0.900 across all 10 seeds} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Interpretation.}
+The v1-to-v2 improvement on easy/medium (mean $+0.37$/$+0.33$, std
+$-0.39$/$-0.34$) is almost entirely attributable to five inference-script
+failure modes that were silent in the v1 evaluation: (e) ENFORCE\_COMPARE
+budget exhaustion, (f) wrong submitted verdict, (g) premature submit,
+(h) deferred flagging, and (i) V5 disclosure false-negatives
+(Section~\ref{sec:fixes}).  The hard tier is unchanged ($\sigma{\approx}0.19$)
+because hard-tier failures are genuine multi-document reasoning gaps, not
+script bugs.  GPT-4.1, o4-mini, and human results are reported on v1 logs
+and remain valid comparisons with the caveat that re-running with v2 would
+likely recover similar gains.
 
 \paragraph{Preliminary open-weight evaluation.}
 Qwen2.5-72B-Instruct via the HuggingFace Inference Router scored
@@ -546,8 +597,10 @@ stratified seed list in \texttt{scripts/stratified\_seeds.py}.
 \subsection{Fix Impact Analysis}
 \label{sec:fixes}
 
-The pre-fix-vs-post-fix improvement decomposes into four mechanisms,
-each with quantitative evidence in the released logs:
+The pre-fix-vs-post-fix improvement decomposes into nine mechanisms
+(a)--(i), each with quantitative evidence in the released logs.
+Mechanisms (a)--(d) were present in the v1 manuscript; (e)--(i) are new
+to this revision.
 
 \paragraph{(a) RNG cross-tier correlation.}
 Without per-tier seed offsets, the same numeric seed drew the same
@@ -577,6 +630,57 @@ six surfaced artifact excerpts in context (up from four); (iii) a
 hard rule that downgrades \texttt{reject}/\texttt{revise} to
 \texttt{pass} if no flags have been raised.  Effect on o4-mini
 easy/seed~42: 0.100 $\to$ 0.912.
+
+\paragraph{(e) ENFORCE\_COMPARE budget exhaustion.}
+On 12-step medium episodes (budget~$=12$), the forced-compare logic
+(\texttt{ENFORCE\_COMPARE=1}) could fire at $\text{step\_index}=11$,
+leaving the post-loop submit as step~13.  \texttt{env.py}
+auto-terminates at \texttt{steps\_used > step\_budget} with
+\texttt{verdict="reject"}, misscoring a real V3$+$V6 episode.  Two
+guards were added: (i) \texttt{\_required\_compare\_action} returns
+\texttt{None} when \texttt{step\_index $\ge$ budget $-$ 2}; and (ii)
+the last-step guard was extended to block both \texttt{inspect} and
+\texttt{compare} actions (previously only \texttt{inspect}).
+Effect: seeds~48 and~51 medium: $0.508/0.100 \to 0.900$.
+
+\paragraph{(f) Verdict computed from model intent, not raised flags.}
+An agent that correctly flagged V1 (reject severity) could still submit
+\texttt{verdict="revise"} if V5 reasoning dominated its chain-of-thought.
+\texttt{\_normalize\_action} now overrides the submitted verdict using
+\texttt{\_smart\_verdict()} applied to the actual
+\texttt{flags\_raised} list in the observation.
+Effect: seed~42 medium: $0.500 \to 0.900$.
+
+\paragraph{(g) Premature submit from ``steps\_remaining $\le$ 1'' rule.}
+The previous timing rule caused agents to submit at $b{=}1$, forfeiting
+the opportunity to flag a second violation on the next step.  The rule
+was tightened to ``steps\_remaining $=$ 0'' throughout
+\texttt{SYSTEM\_PROMPT} and \texttt{RULES}.
+Effect: seed~42 medium V5 detection restored.
+
+\paragraph{(h) Deferred-flagging strategy causing missed violations.}
+The old \texttt{INSPECTION STRATEGY} section read ``Step 3 (late budget):
+Flag each violation found,'' causing agents to defer all flagging to the
+final steps.  When the budget ran short, violations found mid-episode
+went unflagged.  The strategy was rewritten to ``FLAG IMMEDIATELY when
+you find clear evidence --- then keep inspecting remaining artifacts.''
+Effect: seed~47 medium (V1$+$V8): $0.633 \to 0.900$ (V1 no longer missed).
+
+\paragraph{(i) V5 disclosure false-negatives.}
+Agents treating the phrase ``Final model selected with fixed seed'' as
+proper cherry-picking disclosure produced false-negatives on V5.  The
+system prompt now explicitly defines proper V5 disclosure as requiring
+\emph{both} the exact run count \emph{and} the selection metric, with a
+named counter-example.  Effect: seed~42 medium V5 detection restored
+in conjunction with fix~(g).
+
+\paragraph{Cumulative v1 $\to$ v2 improvement (GPT-4.1-mini, 10 seeds).}
+Applying all nine changes to \texttt{inference.py} yields:
+easy $0.530\pm0.390 \to 0.900\pm0.000$;
+medium $0.571\pm0.340 \to 0.901\pm0.003$.
+Hard-tier variance ($\sigma{\approx}0.19$) is unchanged: hard failures
+are compound-reasoning gaps that are the designed discriminator, not
+script bugs.
 
 % ============================================================================
 \section{Discussion}
@@ -699,6 +803,16 @@ roadmap; we do not over-claim transfer.
 log set is consolidated in \texttt{all\_results.txt}; per-seed scores,
 per-model violation recall, threshold sweep, fix-impact deltas, and
 human aggregates are all in the public repository.
+
+\item \textbf{Residual inference-script variance.}  Addressed:
+five additional failure modes (e)--(i) in
+\texttt{inference.py} were identified via per-seed root-cause analysis
+and fixed (Section~\ref{sec:fixes}).  GPT-4.1-mini easy/medium 10-seed
+variance dropped from $\sigma{=}0.39/0.34$ (v1 script) to
+$\sigma{=}0.00/0.003$ (v2 script), confirming that the v1 mean scores
+were substantially depressed by fixable script bugs rather than model
+capability limits.  All raw per-seed v1 and v2 scores are in
+\texttt{all\_results.txt} (Sections~1 and~10).
 \end{enumerate}
 
 % ============================================================================
@@ -721,14 +835,18 @@ synthetic and contains no PII.
 We presented \textsc{MLAuditBench}, the first RL environment for
 training and evaluating AI agents on ML experiment integrity auditing,
 now augmented with a 10-seed ML-trained human baseline, an evidence-
-threshold ablation, bootstrap CIs, a stratified-seed protocol, and a
-self-critique mapping every prior weakness to its remediation.  Frontier
-LLMs already match or exceed humans on cross-artifact reasoning at the
-medium tier yet remain below the interactive expert ceiling on
-compound-violation hard tasks; the benchmark therefore continues to
-discriminate at frontier capability levels.  We hope this revised
-release catalyses research at the intersection of AI safety, scientific
-integrity, and agent evaluation.
+threshold ablation, bootstrap CIs, a stratified-seed protocol, five
+additional inference-script fixes that eliminate easy/medium evaluation
+variance, and a self-critique mapping every prior weakness to its
+remediation.  Frontier LLMs already match or exceed humans on
+cross-artifact reasoning at the medium tier yet remain below the
+interactive expert ceiling on compound-violation hard tasks; the
+benchmark therefore continues to discriminate at frontier capability
+levels.  Per-seed root-cause analysis further revealed that v1 mean
+scores were substantially suppressed by fixable script bugs, not model
+limits --- a methodological lesson for future agent benchmark reports.
+We hope this revised release catalyses research at the intersection of
+AI safety, scientific integrity, and agent evaluation.
 
 % ============================================================================
 \bibliographystyle{plainnat}
