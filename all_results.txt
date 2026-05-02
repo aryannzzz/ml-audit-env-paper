@@ -378,34 +378,138 @@ All 9 edits are in inference.py (v2 / 2026-04-29).
 eval_results.json preserves the original (v1) scores for reproducibility.
 
 ================================================================================
-11. GPT-4.1 (balanced) v2 RESULTS  [PENDING — requires OPENAI_API_KEY]
+11. GPT-4.1 (balanced) v2 RESULTS  (2026-05-02)
+    Model: gpt-4.1 | Seeds 42-51 | inference.py v2 | Sequential (temperature=0)
 ================================================================================
-Run command (once key is available):
-  export OPENAI_API_KEY="sk-proj-..."
-  bash scripts/run_v2_eval.sh
-  python3 scripts/parse_v2_results.py logs/v2_gpt41_<ts>.txt
+Source log: logs/v2_gpt41_20260502.txt
 
-Expected outcome based on v2 script fixes:
-  - Clean-episode seeds (where GPT-4.1 previously scored 0.160-0.900) should
-    stabilise to 0.900 via the verdict-override fix (f).
-  - Seeds 47/48/51 (medium) should improve from 0.561/0.833/0.039 to ~0.900
-    via ENFORCE_COMPARE guard (e).
-  - Easy tier expected to reach ~0.900 ± 0.000 as with GPT-4.1-mini.
+EASY TIER (budget=8, clean_ratio=50%):
+  seed | score | flags raised    | ground truth
+    42 | 0.900 | ['V1']          | ['V1']
+    43 | 0.900 | []              | []
+    44 | 0.900 | []              | []
+    45 | 0.900 | []              | []
+    46 | 0.900 | ['V2']          | ['V2']
+    47 | 0.900 | []              | []
+    48 | 0.900 | ['V4']          | ['V4']
+    49 | 0.900 | []              | []
+    50 | 0.900 | []              | []
+    51 | 0.900 | []              | []
+  Mean: 0.9000  Std: 0.0000
+  Before (v1): Mean=0.592, Std=0.407
+  Improvement: +0.308 mean, -0.407 std
+
+MEDIUM TIER (budget=12, clean_ratio=35%):
+  seed | score | flags raised    | ground truth
+    42 | 0.500 | ['V1']          | ['V1', 'V5']   <- V5 missed
+    43 | 0.908 | []              | []
+    44 | 0.908 | []              | []
+    45 | 0.908 | []              | []
+    46 | 0.900 | []              | []
+    47 | 0.900 | ['V1', 'V8']    | ['V1', 'V8']
+    48 | 0.500 | ['V3']          | ['V3', 'V6']   <- V6 missed
+    49 | 0.900 | []              | []
+    50 | 0.908 | []              | []
+    51 | 0.500 | ['V3']          | ['V3', 'V6']   <- V6 missed
+  Mean: 0.7832  Std: 0.1854
+  Before (v1): Mean=0.688, Std=0.365
+  Improvement: +0.095 mean, -0.180 std
+  Note: Remaining variance driven by V5/V6 second-violation misses (seeds 42,48,51).
+        GPT-4.1 consistently misses V6 (metric shopping) in multi-violation episodes.
+
+HARD TIER (budget=18, clean_ratio=20%):
+  seed | score | flags raised    | ground truth
+    42 | 0.933 | []              | []
+    43 | 0.928 | []              | []
+    44 | 0.655 | ['V1', 'V4']    | ['V1', 'V4', 'V6']  <- V6 missed
+    45 | 0.933 | []              | []
+    46 | 0.933 | []              | []
+    47 | 0.650 | ['V2', 'V5']    | ['V2', 'V4', 'V5']  <- V4 missed
+    48 | 0.528 | ['V3']          | ['V3', 'V6']         <- V6 missed
+    49 | 0.655 | ['V4', 'V5']    | ['V4', 'V5', 'V6']  <- V6 missed
+    50 | 0.928 | []              | []
+    51 | 0.655 | ['V4', 'V5']    | ['V4', 'V5', 'V6']  <- V6 missed
+  Mean: 0.7798  Std: 0.1553
+  Before (v1): Mean=0.662, Std=0.378
+  Improvement: +0.118 mean, -0.223 std
+  Note: Hard-tier partial scores driven by V6 (metric shopping) being missed on
+        5 of 6 violation seeds. V6 detection requires careful compare of
+        validation_strategy vs eval_report — GPT-4.1 inspects but does not flag.
+
+SUMMARY (GPT-4.1 v2, seeds 42-51):
+  Tier   | Mean   | Std    | v1 Mean | Δ Mean
+  easy   | 0.9000 | 0.0000 | 0.592   | +0.308
+  medium | 0.7832 | 0.1854 | 0.688   | +0.095
+  hard   | 0.7798 | 0.1553 | 0.662   | +0.118
+  overall avg: 0.821
 
 ================================================================================
-12. o4-mini (reasoning) v2 RESULTS  [PENDING — requires OPENAI_API_KEY]
+12. o4-mini (reasoning) v2 RESULTS  (2026-04-30)
+    Model: o4-mini | Seeds 42-51 | inference.py v2 | Sequential (temperature=0)
 ================================================================================
-Run command:
-  bash scripts/run_v2_eval.sh   # runs both models
-  python3 scripts/parse_v2_results.py logs/v2_o4mini_<ts>.txt
+Source log: logs/v2_o4mini_raw.txt
 
-Expected outcome:
-  - o4-mini self-consistent hallucination (seed 48: easy 0.100, medium 0.008,
-    hard 0.039) is a model-level failure mode unrelated to the 9 script fixes;
-    hallucination-prone seeds may not improve with v2 script alone.
-  - Clean-episode scores should improve from 0.160 to 0.900 via fix (f).
-  - Evidence-fabrication seeds (where quoted text fails the 3-layer matcher)
-    require prompt-level rather than script-level remediation.
+EASY TIER (budget=8, clean_ratio=50%):
+  seed | score | flags raised    | ground truth
+    42 | 0.900 | []              | ['V1']     <- V1 missed; clean-pass scored 0.900
+    43 | 0.160 | []              | []         <- clean; auto-terminate before submit
+    44 | 0.988 | []              | []         <- clean pass ✓
+    45 | 0.160 | []              | []         <- clean; auto-terminate before submit
+    46 | 0.900 | ['V2']          | ['V2']     ✓
+    47 | 0.075 | []              | []         <- clean; low-efficiency pass
+    48 | 0.900 | ['V4']          | ['V4']     ✓
+    49 | 0.988 | []              | []         <- clean pass ✓
+    50 | 0.160 | []              | []         <- clean; auto-terminate before submit
+    51 | 0.160 | []              | []         <- clean; auto-terminate before submit
+  Mean: 0.5391  Std: 0.3980
+  Before (v1): Mean=0.604, Std=0.396
+  Change: -0.065 mean (v2 fixes did not recover easy variance for o4-mini)
+
+MEDIUM TIER (budget=12, clean_ratio=35%):
+  seed | score | flags raised    | ground truth
+    42 | 0.247 | []              | ['V1', 'V5']  <- both missed
+    43 | 0.950 | []              | []             ✓
+    44 | 0.075 | []              | []             <- clean; low-efficiency pass
+    45 | 0.967 | []              | []             ✓
+    46 | 0.160 | []              | []             <- clean; auto-terminate
+    47 | 0.900 | ['V1']          | ['V1', 'V8']  <- V8 missed
+    48 | 0.925 | ['V3']          | ['V3', 'V6']  <- V6 missed
+    49 | 0.160 | []              | []             <- clean; auto-terminate
+    50 | 0.992 | []              | []             ✓
+    51 | 0.500 | ['V3']          | ['V3', 'V6']  <- V6 missed
+  Mean: 0.5876  Std: 0.3745
+  Before (v1): Mean=0.626, Std=0.395
+  Change: -0.038 mean
+
+HARD TIER (budget=18, clean_ratio=20%):
+  seed | score | flags raised    | ground truth
+    42 | 0.357 | []              | []             <- clean; missed pass bonus
+    43 | 0.233 | ['V8']          | []             <- false positive V8
+    44 | 0.192 | ['V1', 'V4']    | ['V1','V4','V6'] <- V6 missed; low score
+    45 | 0.928 | []              | []             ✓
+    46 | 0.160 | []              | []             <- clean; auto-terminate
+    47 | 0.633 | ['V2', 'V5']    | ['V2','V4','V5'] <- V4 missed
+    48 | 0.240 | []              | ['V3','V6']    <- both missed
+    49 | 0.900 | ['V4', 'V6']    | ['V4','V5','V6'] <- V5 missed
+    50 | 0.500 | ['V3']          | []             <- false positive V3
+    51 | 0.544 | ['V4', 'V5']    | ['V4','V5','V6'] <- V6 missed
+  Mean: 0.4687  Std: 0.2689
+  Before (v1): Mean=0.528, Std=0.449
+  Change: -0.059 mean, -0.180 std
+
+SUMMARY (o4-mini v2, seeds 42-51):
+  Tier   | Mean   | Std    | v1 Mean | Δ Mean
+  easy   | 0.5391 | 0.3980 | 0.604   | -0.065
+  medium | 0.5876 | 0.3745 | 0.626   | -0.038
+  hard   | 0.4687 | 0.2689 | 0.528   | -0.059
+  overall avg: 0.532
+
+Conclusion: The 9 inference-script fixes provided no improvement for o4-mini and
+slightly degraded mean scores. This confirms the earlier expectation: o4-mini's
+failures are driven by model-level issues (self-consistent hallucination, evidence
+fabrication, premature episode termination patterns) rather than script bugs.
+False positives on hard (seeds 43, 50) and auto-terminate behaviour on clean
+easy/medium seeds account for the persistent variance.
 
 ================================================================================
 END OF AGGREGATED RESULTS

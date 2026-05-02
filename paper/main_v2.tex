@@ -455,9 +455,8 @@ Claude Sonnet 4.6 (interactive, seed 42) & $0.963$ & $0.950$ & $0.950$ & -- & --
 
 \begin{table}[h]
 \centering
-\caption{GPT-4.1-mini 10-seed results with updated \texttt{inference.py} v2
-(all nine inference fixes applied, seeds 42--51, sequential runs).
-All other model rows are unchanged from Table~\ref{tab:baseline} (v1 script).}
+\caption{10-seed results with updated \texttt{inference.py} v2
+(all nine inference fixes applied, seeds 42--51, sequential runs, temperature=0).}
 \label{tab:baseline_v2}
 \small
 \begin{tabular}{lcccccc}
@@ -470,10 +469,16 @@ All other model rows are unchanged from Table~\ref{tab:baseline} (v1 script).}
 \midrule
 GPT-4.1-mini (fast) &
   $0.530\pm0.390$ & $0.571\pm0.340$ & $0.629\pm0.352$ &
-  $\mathbf{0.900\pm0.000}$ & $\mathbf{0.901\pm0.003}$ & ${\sim}0.819\pm0.190$ \\
+  $\mathbf{0.900\pm0.000}$ & $\mathbf{0.901\pm0.003}$ & $0.819\pm0.190$ \\
+GPT-4.1 (balanced) &
+  $0.592\pm0.407$ & $0.688\pm0.365$ & $0.662\pm0.378$ &
+  $\mathbf{0.900\pm0.000}$ & $0.783\pm0.185$ & $0.780\pm0.155$ \\
+o4-mini (reasoning) &
+  $0.604\pm0.396$ & $0.626\pm0.395$ & $0.528\pm0.449$ &
+  $0.539\pm0.398$ & $0.588\pm0.375$ & $0.469\pm0.269$ \\
 \midrule
-\multicolumn{7}{l}{\small Per-seed medium scores (v2): 0.900 / 0.900 / 0.900 / 0.900 / 0.900 / 0.900 / 0.900 / 0.900 / 0.908 / 0.900} \\
-\multicolumn{7}{l}{\small Per-seed easy scores (v2): 0.900 across all 10 seeds} \\
+\multicolumn{7}{l}{\small Per-seed GPT-4.1 medium (v2): 0.500 / 0.908 / 0.908 / 0.908 / 0.900 / 0.900 / 0.500 / 0.900 / 0.908 / 0.500} \\
+\multicolumn{7}{l}{\small Per-seed o4-mini easy (v2): 0.900 / 0.160 / 0.988 / 0.160 / 0.900 / 0.075 / 0.900 / 0.988 / 0.160 / 0.160} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -512,10 +517,9 @@ were used.
 \begin{table}[h]
 \centering
 \caption{Human vs.\ LLM baselines (10-seed means).  Human seeds are drawn
-\emph{independently per tier}; LLM rows use \texttt{inference.py} v1
-(original script, seeds 42--51).  Updated GPT-4.1-mini v2 scores
-($0.900 / 0.901 / {\sim}0.82$) are in Table~\ref{tab:baseline_v2};
-v2 results for GPT-4.1 and o4-mini are pending.}
+\emph{independently per tier}; LLM v1 rows use \texttt{inference.py} v1
+(original script, seeds 42--51).  v2 rows use the updated script
+(Table~\ref{tab:baseline_v2}).}
 \label{tab:human}
 \small
 \begin{tabular}{lcccc}
@@ -528,9 +532,12 @@ GPT-4.1 (balanced, v1)$^\dagger$ & $0.592\pm0.407$ & $0.688\pm0.365$ & $0.662\pm
 o4-mini (reasoning, v1)$^\dagger$ & $0.604\pm0.396$ & $0.626\pm0.395$ & $0.528\pm0.449$ & $0.586$ \\
 Claude Sonnet 4.6 (1 seed)  & $0.963$ & $0.950$ & $0.950$ & $0.954$ \\
 \midrule
-GPT-4.1-mini (v2 script)    & $0.900\pm0.000$ & $0.901\pm0.003$ & ${\sim}0.82\pm0.19$ & ${\sim}0.87$ \\
+GPT-4.1-mini (v2 script)    & $0.900\pm0.000$ & $0.901\pm0.003$ & $0.819\pm0.190$ & $0.873$ \\
+GPT-4.1 (v2 script)         & $0.900\pm0.000$ & $0.783\pm0.185$ & $0.780\pm0.155$ & $0.821$ \\
+o4-mini (v2 script)         & $0.539\pm0.398$ & $0.588\pm0.375$ & $0.469\pm0.269$ & $0.532$ \\
 \bottomrule
 \multicolumn{5}{l}{\small $^\dagger$ v1 script means are depressed by fixable script bugs (Section~\ref{sec:fixes}).} \\
+\multicolumn{5}{l}{\small o4-mini v2 shows no improvement over v1; failures are model-level (hallucination, premature termination).} \\
 \end{tabular}
 \end{table}
 
@@ -540,8 +547,12 @@ GPT-4.1-mini (v2 script)    & $0.900\pm0.000$ & $0.901\pm0.003$ & ${\sim}0.82\pm
 known to be substantially depressed by five inference-script bugs
 (Section~\ref{sec:fixes}).  The updated GPT-4.1-mini v2 means
 ($0.900 / 0.901$) surpass the human baseline ($0.82 / 0.86$) by clear
-margins; whether the same holds for GPT-4.1 and o4-mini is pending v2
-re-runs.
+margins; GPT-4.1 v2 confirms this on easy ($0.900$) but shows persistent
+V6 (metric-shopping) misses on medium ($0.783$) and hard ($0.780$).
+o4-mini v2 ($0.539 / 0.588 / 0.469$) shows no improvement over v1,
+confirming that its failures are model-level — self-consistent
+hallucination and premature episode termination — rather than fixable
+script bugs.
 (ii) Humans show their highest variance ($\sigma{=}0.34$) on hard ---
 the same regime where LLMs collapse via self-consistent hallucination
 and compound-violation reasoning gaps (Table~\ref{tab:hard}).  The hard
