@@ -40,8 +40,6 @@ Chennai, India\\
 \texttt{ch24b040@smail.iitm.ac.in}
 }
 
-\date{April 2026}
-
 \begin{document}
 \maketitle
 
@@ -66,25 +64,21 @@ experiments (50\%/35\%/20\% draw probability for easy/medium/hard) and red
 herrings in harder tasks.  We evaluate three frontier OpenAI models
 (GPT-4.1-mini, GPT-4.1, o4-mini) over 10 seeds each, an interactive
 single-seed Claude Sonnet 4.6 expert audit, a preliminary open-weight
-Qwen2.5-72B run, and -- new in this revision -- a 10-seed
-\emph{ML-trained human baseline} ($0.82\pm0.13$ easy, $0.86\pm0.09$
-medium, $0.57\pm0.34$ hard).  The human baseline reveals that on primary seeds (45--46) frontier LLMs
-already match or exceed humans on cross-artifact reasoning at the medium
-tier ($0.917$ for o4-mini vs.\ $0.86$ for humans) yet remain below the
-interactive Claude expert ceiling ($0.954$) on compound hard-tier tasks;
-on the full 10-seed mean, v1-script LLM scores appear below the human
-baseline, but per-seed root-cause analysis shows this gap is largely
-attributable to inference-script bugs (Section~\ref{sec:fixes}) rather
-than genuine capability deficits.
-Humans exhibit the highest variance on the hard tier ($\sigma{=}0.34$),
-mirroring the LLM compound-violation failure mode.  An evidence-matching
-threshold ablation across $\{0.6,0.7,0.8,0.9,1.0\}$ confirms model
-rankings are stable under all five thresholds.  Per-seed root-cause
-analysis identified five additional inference-script failure modes whose
-repair collapses GPT-4.1-mini easy/medium 10-seed variance from
-$\sigma{=}0.39/0.34$ to $\sigma{=}0.00/0.003$, demonstrating that
-v1 mean scores were substantially suppressed by fixable script bugs
-rather than model capability limits.
+Qwen2.5-72B run, and a 10-seed \emph{ML-trained human baseline}
+($0.82\pm0.13$ easy, $0.86\pm0.09$ medium, $0.57\pm0.34$ hard).
+On primary seeds (45--46) GPT-4.1-mini and o4-mini match or exceed humans
+on cross-artifact reasoning at the medium tier ($0.913$--$0.917$
+vs.\ $0.86$ for humans) yet remain below the interactive Claude expert
+ceiling ($0.954$) on compound hard-tier tasks.
+Per-seed root-cause analysis identified nine inference-script failure modes
+whose repair collapses GPT-4.1-mini easy/medium 10-seed variance from
+$\sigma{=}0.39/0.34$ to $\sigma{=}0.00/0.003$; under the corrected
+script, GPT-4.1-mini reaches $0.900/0.901/0.819$ across tiers, GPT-4.1
+reaches $0.900/0.783/0.780$, and o4-mini ($0.539/0.588/0.469$) shows
+no improvement, confirming model-level failures dominate for reasoning
+models.  An evidence-matching threshold ablation across
+$\{0.6,0.7,0.8,0.9,1.0\}$ confirms model rankings are stable under all
+five thresholds.
 The environment is deployed as an OpenEnv-compatible Docker container on
 Hugging Face Spaces and is fully reproducible from the released seeds.
 \end{abstract}
@@ -139,8 +133,8 @@ experiments and red herrings.
 reasoning-optimised), an interactive Claude Sonnet 4.6 expert audit, a
 preliminary open-weight Qwen2.5-72B baseline, and a 10-seed-per-tier
 \emph{ML-trained human baseline} run under identical action schema, step
-budget, and grader.  We provide bootstrap 95\% confidence intervals and
-paired comparisons for all numbers reported.
+budget, and grader.  We provide bootstrap 95\% confidence intervals for
+all numbers reported.
 (v) We package the environment as an OpenEnv-compliant Docker container
 deployable to Hugging Face Spaces and release a complete human-evaluation
 kit (facilitator protocol, participant instructions, session-log
@@ -165,11 +159,10 @@ $\sigma{=}0.39/0.34$ to $\sigma{=}0.00/0.003$
 (Section~\ref{sec:fixes}); and (g) stabilises the v1.1 experiment pool,
 disambiguates v1.0 vs.\ v1.1 archetype counts, and supplies a
 hard-tier violation-type analysis (Section~\ref{sec:hardanalysis}).
-The six v1 weaknesses identified in the gap analysis (no human baseline,
-uncharacterised variance, late archetype addition, grader sensitivity,
-limited model diversity, and synthetic-only scope) are each addressed
-by one or more of items (a)--(g) above or by the roadmap in
-Section~\ref{sec:limitations}.
+These extensions collectively address the major open questions in the
+original release: human-comparison gap, uncharacterised evaluation
+variance, archetype coverage, grader sensitivity, model diversity, and
+synthetic-only scope (Section~\ref{sec:limitations}).
 
 % ============================================================================
 \section{Related Work}
@@ -204,8 +197,8 @@ a capability anchor and not as a claim of expert consensus.
 \paragraph{RL Reward Design.}
 Potential-based reward shaping~\cite{ng1999policy} provides the
 theoretical foundation for our layered reward design.  Process reward
-models (AgentPRM, 2025) and SCAR's Shapley-value rewards inform our
-partial credit mechanisms.
+models~\cite{luo2025pitfalls} % TODO: verify AgentPRM citation key
+and Shapley-value credit assignment inform our partial credit mechanisms.
 
 \paragraph{Positioning.}
 Table~\ref{tab:related} summarises how \textsc{MLAuditBench} differs from
@@ -302,10 +295,9 @@ We formalize \textsc{MLAuditBench} as a finite-horizon MDP $\mathcal{M}
 \subsection{Action Space, Observation Space, Violation Taxonomy, and
 Experiment Pool}
 
-We retain the action and observation specifications, the eight-type
-violation taxonomy (V1--V8), and the experiment pool description from
-the v1 manuscript; tables and details are reproduced unchanged in the
-supplement to keep this revision focused on what is new.  The salient
+Full action and observation specifications, the eight-type violation
+taxonomy (V1--V8), and the experiment pool description are provided in
+the supplement; this section summarises the salient
 quantities that drive the analysis below are: 5 typed actions; 8
 violation types; 56 v1.0 experiments / 62 v1.1 experiments across 5
 archetypes (\texttt{tabular\_clf}, \texttt{timeseries\_reg},
@@ -425,8 +417,8 @@ results.  Primary seeds are the subset that satisfies (a) running with
 the updated \texttt{inference.py} v2 (with all nine guards from
 Section~\ref{sec:fixes}) and (b) drawing no structurally identified
 outlier episodes (Section~\ref{sec:outliers}).
-Table~\ref{tab:baseline_v2} shows the updated GPT-4.1-mini 10-seed
-results obtained with \texttt{inference.py} v2.
+Table~\ref{tab:baseline_v2} shows the full 10-seed results for all
+three models under \texttt{inference.py} v2.
 
 \begin{table}[h]
 \centering
@@ -565,18 +557,20 @@ the same regime where LLMs collapse via self-consistent hallucination
 and compound-violation reasoning gaps (Table~\ref{tab:hard}).  The hard
 tier therefore discriminates at frontier capability levels even with the
 v2 script.
-(iii) On primary seeds 45--46, three frontier LLMs match or exceed
-humans on easy/medium (${\sim}0.91$ vs.\ $0.82$--$0.86$), and the
-interactive Claude expert ceiling ($0.954$ hard) remains above every
-automated model.  This gap motivates continued benchmark development.
+(iii) On primary seeds 45--46, GPT-4.1-mini and o4-mini match or exceed
+humans on easy and medium ($0.913$--$0.917$ vs.\ $0.86$ for medium;
+$0.900$--$0.906$ vs.\ $0.82$ for easy); GPT-4.1 matches humans on easy
+($0.900$) but falls short on medium ($0.578\pm0.467$ on the two primary
+seeds).  The interactive Claude expert ceiling ($0.954$ hard) remains
+above every automated model, motivating continued benchmark development.
 
 \paragraph{Caveat.}
 Humans were drawn from a single institutional pool (BTech / early-grad
 ML).  We follow the human-evaluation kit's recommended phrasing: this is
 a capability anchor, not a claim of expert consensus.  A trained
-domain-expert reviewer (e.g.\ Kapoor-Narayanan-style auditor) is likely
-to outperform this baseline; we leave that study to a v2 expert
-benchmark.
+domain-expert reviewer (e.g.\ a Kapoor--Narayanan-style auditor) is
+likely to outperform this baseline; we leave that study to a future
+expert-cohort benchmark.
 
 \subsection{Evidence-Threshold Ablation}
 \label{sec:threshold}
@@ -637,8 +631,10 @@ Because clean-episode draws account for $\sim$50\% of variance on the
 easy tier, we recommend reporting any future model comparison using a
 \emph{stratified} seed sample that enforces (i) at least one clean and
 one violation episode per tier, and (ii) at least three distinct
-experiment IDs per tier across the seed range.  We provide the
-stratified seed list in \texttt{scripts/stratified\_seeds.py}.
+experiment IDs per tier across the seed range.  % TODO: scripts/stratified_seeds.py does not yet exist in the repo;
+% either create the file or update this reference before submission.
+We provide a recommended stratified seed selection procedure in
+\texttt{scripts/run\_evaluation.py}.
 
 \subsection{Hard-Tier Violation Analysis}
 \label{sec:hardanalysis}
@@ -720,8 +716,8 @@ for example via mandatory cross-artifact steps or dedicated sub-prompts.
 
 The pre-fix-vs-post-fix improvement decomposes into nine mechanisms
 (a)--(i), each with quantitative evidence in the released logs.
-Mechanisms (a)--(d) were present in the v1 manuscript; (e)--(i) are new
-to this revision.
+Mechanisms (a)--(d) address structural issues in the experiment
+generator; (e)--(i) address inference-script failure modes.
 
 \paragraph{(a) RNG cross-tier correlation.}
 Without per-tier seed offsets, the same numeric seed drew the same
@@ -863,8 +859,11 @@ violations such as evaluation-set leakage into pre-training data.
 56 (v1.0) / 62 (v1.1) experiments is smaller than static-dataset
 benchmarks like SWE-bench (2{,}294 issues), but the effective
 evaluation space is larger because each episode is multi-step and
-combinatorial.  The effect size between GPT-4.1-mini and the random
-baseline ($\Delta{=}0.66$) is robust across seeds.
+combinatorial.  % TODO: verify effect size; v2 tier-mean avg 0.873 vs
+% random 0.16 gives Delta~0.71; original Delta=0.66 source unclear.
+The score gap between GPT-4.1-mini (v2 tier-mean $0.873$) and the
+random baseline (${\sim}0.16$) is ${\approx}0.71$ and is robust across
+seeds.
 
 \paragraph{Human population.}
 Single-institution ML-trained students.  A trained-auditor cohort is
@@ -886,16 +885,20 @@ is planned.
 \subsection{Outlier Seed Episodes}
 \label{sec:outliers}
 
-Across 10 seeds, two outlier categories inflate variance.
-\textit{First}, seeds 44, 47, 49, 50, 51 all draw clean experiments on
-the easy tier (5/10 seeds) -- intended adversarial behaviour by design,
-but also the largest single variance contributor; every model scores
-$\approx 0.16$ (verdict-bonus only).
-\textit{Second}, o4-mini at seed~48 collapses across all tiers
-(easy~0.100, medium~0.008, hard~0.039) via self-consistent
-hallucination.  These outliers motivate the stratified seed protocol of
-Section~\ref{sec:stats}.  All raw per-seed scores are retained in
-\texttt{eval\_results.json} and reproduced in \texttt{all\_results.txt}.
+Across 10 seeds, two outlier categories inflate v1 variance.
+\textit{First}, seeds 42, 44, 45, 47, 49, 50, 51 draw clean experiments
+on the easy tier (7/10 seeds) --- intended adversarial behaviour by
+design, but also the largest single variance contributor.  Under the v1
+script, the verdict-override bug (fix~f) caused all models to score
+$\approx 0.16$ on these seeds; under the v2 script, clean seeds correctly
+score $\approx 0.90$.
+\textit{Second}, o4-mini at seed~48 collapses under the v1 script
+(easy~0.100, medium~0.008, hard~0.039) via self-consistent hallucination
+--- a model-level failure mode that persists partially under v2
+(hard~0.240).  These structural properties motivate the stratified seed
+protocol of Section~\ref{sec:stats}.  All raw per-seed scores are
+retained in \texttt{eval\_results.json} and reproduced in
+\texttt{all\_results.txt}.
 
 % ============================================================================
 \section*{Broader Impact}
@@ -916,20 +919,21 @@ synthetic and contains no PII.
 
 We presented \textsc{MLAuditBench}, the first RL environment for
 training and evaluating AI agents on ML experiment integrity auditing.
-This revision adds a 10-seed ML-trained human baseline, an evidence-threshold
-ablation, bootstrap CIs, a stratified-seed protocol, a hard-tier
-violation-type analysis, and nine inference-script fixes that eliminate
-easy/medium evaluation variance.  On primary seeds (45--46), frontier
-LLMs match or exceed humans on cross-artifact reasoning at the medium tier
-and continue to lag the interactive expert ceiling on compound hard-tier
-tasks.  The updated GPT-4.1-mini v2 10-seed mean ($0.901$ medium) surpasses
-the human baseline ($0.86$), while the hard tier ($\sigma{\approx}0.19$)
-remains the designed discriminator: compound-violation episodes expose
-genuine multi-document reasoning gaps in every automated agent.
-Per-seed root-cause analysis revealed that v1 mean scores were substantially
-suppressed by fixable script bugs, not model capability limits --- a
-methodological caution for agent benchmark reporting.
-We hope this revised release catalyses research at the intersection of AI
+The benchmark includes a 10-seed ML-trained human baseline, an
+evidence-threshold ablation, bootstrap CIs, a stratified-seed protocol,
+a hard-tier violation-type analysis, and nine inference-script fixes that
+eliminate easy/medium evaluation variance.  Under the corrected v2 script,
+GPT-4.1-mini ($0.900/0.901/0.819$) and GPT-4.1 ($0.900/0.783/0.780$)
+surpass the human baseline on easy but face persistent V6/V5 reasoning
+gaps on compound tasks; o4-mini ($0.539/0.588/0.469$) shows no
+improvement, confirming model-level failure modes dominate for reasoning
+models.  The hard tier ($\sigma{\approx}0.19$) remains the designed
+discriminator: compound-violation episodes expose genuine multi-document
+reasoning gaps that no current automated agent fully resolves.
+Per-seed root-cause analysis revealed that initial mean scores were
+substantially suppressed by fixable script bugs, not model capability
+limits --- a methodological caution for agent benchmark reporting.
+We hope this benchmark catalyses research at the intersection of AI
 safety, scientific integrity, and agent evaluation.
 
 % ============================================================================
