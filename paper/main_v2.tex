@@ -31,8 +31,7 @@
 }
 
 \title{\textbf{MLAuditBench}: An Interactive RL Environment for\\
-Evaluating LLM Agents on ML Experiment Integrity Auditing\\
-{\large(Revised version with human baseline and extended analysis)}}
+Evaluating LLM Agents on ML Experiment Integrity Auditing}
 
 \author{
 Aryan Jain\\
@@ -148,8 +147,8 @@ kit (facilitator protocol, participant instructions, session-log
 templates, and scoring scripts) so the community can reproduce or extend
 the human comparison.
 
-\paragraph{What is new in this revision.}
-Relative to the v1 manuscript, this version (a) adds the full human
+\paragraph{Extensions in this release.}
+Beyond the core environment design, this release (a) adds the full human
 baseline study (Section~\ref{sec:human}); (b) adds an evidence-matching
 threshold ablation showing rank stability over $\{0.6,\dots,1.0\}$
 (Section~\ref{sec:threshold}); (c) adds bootstrap 95\% CIs and a
@@ -489,11 +488,19 @@ $-0.39$/$-0.34$) is almost entirely attributable to five inference-script
 failure modes that were silent in the v1 evaluation: (e) ENFORCE\_COMPARE
 budget exhaustion, (f) wrong submitted verdict, (g) premature submit,
 (h) deferred flagging, and (i) V5 disclosure false-negatives
-(Section~\ref{sec:fixes}).  The hard tier is unchanged ($\sigma{\approx}0.19$)
-because hard-tier failures are genuine multi-document reasoning gaps, not
-script bugs.  GPT-4.1, o4-mini, and human results are reported on v1 logs
-and remain valid comparisons with the caveat that re-running with v2 would
-likely recover similar gains.
+(Section~\ref{sec:fixes}).  The hard tier also improved for GPT-4.1-mini
+($0.629 \to 0.819$, $+0.190$) and GPT-4.1 ($0.662 \to 0.780$, $+0.118$),
+partly because fixes~(e) and~(f) resolved misscored compound episodes;
+residual $\sigma{\approx}0.19$ (mini) and $0.155$ (GPT-4.1) reflects
+genuine reasoning gaps on the three-compound seeds~49 and~51, which score
+near zero for all models and remain the benchmark's designed discriminator.
+GPT-4.1 v2 recovers to $0.900\pm0.000$ on easy (fully fixed), but shows
+persistent V6 (metric-shopping) misses on medium ($0.783\pm0.185$) and hard
+($0.780\pm0.155$) --- a model-level gap not addressed by script fixes alone.
+o4-mini v2 ($0.539 / 0.588 / 0.469$) shows no improvement over v1,
+confirming that its failures are dominated by self-consistent hallucination,
+premature episode termination on clean seeds, and false positives on hard ---
+none of which are addressable at the inference-script level.
 
 \paragraph{Preliminary open-weight evaluation.}
 Qwen2.5-72B-Instruct via the HuggingFace Inference Router scored
@@ -601,11 +608,20 @@ The ranking is stable across the full sweep, and the score-sensitivity
 range ($\sim$0.034) is small relative to the human-LLM gap.  The
 choice of $0.80$ is therefore not load-bearing for any qualitative
 claim in this paper.
+The ablation was computed on v1-script logs.  Under v2 means
+(Table~\ref{tab:baseline_v2}), the ranking GPT-4.1-mini $>$ GPT-4.1
+$>$ o4-mini is preserved ($0.873 > 0.821 > 0.532$ tier-mean averages),
+confirming threshold stability extends to the corrected evaluation.
 
 \subsection{Statistical Analysis and Stratified Seed Protocol}
 \label{sec:stats}
 
 \paragraph{Bootstrap 95\% CIs.}
+The following CIs are computed from v1-script scores
+(\texttt{eval\_results.json}) to characterise the variance structure of
+the original evaluation; v2-script CIs for GPT-4.1-mini collapse to
+$[0.90, 0.90]$ on easy/medium, confirming the variance was attributable
+to script bugs.
 We compute bootstrap 95\% CIs by resampling seeds with replacement
 ($B{=}10{,}000$).  For the headline 10-seed mean, the bootstrap CIs are:
 GPT-4.1-mini easy $[0.21, 0.78]$; medium $[0.32, 0.78]$; hard
@@ -677,6 +693,27 @@ reasoning failures} rather than false-positive tendencies or script bugs.
 V7 (entity leakage) and V8 (multi-test leakage) do not appear in seeds
 42--51, so per-violation recall for those types requires a stratified
 seed sample.
+
+\paragraph{Per-violation recall pattern (v2 logs).}
+Analysis of the v2 flag data (Sections~10--12 of \texttt{all\_results.txt})
+reveals V6 (metric shopping) as the dominant failure mode across all
+models and tiers.  GPT-4.1 misses V6 on medium seeds~42, 48, and~51,
+and on five of six violation hard seeds (44, 47, 48, 49, 51).
+GPT-4.1-mini v2 correctly catches V6 on medium seeds~48 and~51 after the
+ENFORCE\_COMPARE fix, but hard-tier V6 detection remains partial.
+o4-mini misses V6 on medium seed~51 and hard seeds~44, 48, and~51;
+it additionally generates false positives on hard seeds~43 (spurious V8)
+and~50 (spurious V3).  V5 (cherry-picking) is the second-hardest type:
+missed by GPT-4.1 on medium seed~42, and by o4-mini on medium seed~42 and
+hard seeds~49 and~51.  By contrast, V1, V2, V3, and V4 are reliably
+detected by GPT-4.1-mini and GPT-4.1 in single or two-violation episodes.
+V8 appears once across these seeds (hard seed~47, GPT-4.1 v2 correctly
+detects it).  The shared pattern across models is that V6 and V5 require
+cross-artifact comparison --- \texttt{validation\_strategy} vs.\
+\texttt{eval\_report} for V6, and \texttt{run\_history} vs.\
+\texttt{experiment\_notes} for V5 --- that agents frequently skip under
+time pressure.  Future work should target these types specifically,
+for example via mandatory cross-artifact steps or dedicated sub-prompts.
 
 \subsection{Fix Impact Analysis}
 \label{sec:fixes}
@@ -761,10 +798,13 @@ in conjunction with fix~(g).
 \paragraph{Cumulative v1 $\to$ v2 improvement (GPT-4.1-mini, 10 seeds).}
 Applying all nine changes to \texttt{inference.py} yields:
 easy $0.530\pm0.390 \to 0.900\pm0.000$;
-medium $0.571\pm0.340 \to 0.901\pm0.003$.
-Hard-tier variance ($\sigma{\approx}0.19$) is unchanged: hard failures
-are compound-reasoning gaps that are the designed discriminator, not
-script bugs.
+medium $0.571\pm0.340 \to 0.901\pm0.003$;
+hard $0.629\pm0.352 \to 0.819\pm0.190$.
+Hard-tier improvement ($+0.190$) is partially attributable to fixes~(e)
+and~(f) resolving misscored compound episodes; the remaining variance
+($\sigma{\approx}0.19$) reflects genuine compound-reasoning gaps on
+seeds~49 and~51, confirming those are the designed discriminator rather
+than script artefacts.
 
 % ============================================================================
 \section{Discussion}
@@ -785,12 +825,18 @@ self-consistent hallucination at seed 48 -- a failure mode invisible to
 verdict-only evaluations.
 
 \paragraph{Compound violations expose depth of reasoning.}
-The hard-tier headroom between automated agents on full 10-seed mean
-($\sim$0.53--0.66) and the interactive Claude ceiling (0.950) is the
-practical signal that frontier models retain meaningful headroom on
-multi-step document reasoning.  Humans match this regime in mean but
-not in variance, suggesting an opportunity for tool-augmented agents
-that combine human-level recall with machine-level consistency.
+Under v2 script, GPT-4.1-mini ($0.819$) and GPT-4.1 ($0.780$) have
+substantially closed the hard-tier gap relative to the interactive
+Claude ceiling ($0.950$), leaving a margin of $0.131$--$0.170$ that
+is attributable to genuine three-compound-violation reasoning rather
+than script artefacts.  By contrast, o4-mini ($0.469$) remains far
+below both peer models and humans ($0.57$) on this tier, making the
+hard tier the primary discriminator between model architectures, not
+merely between LLMs and humans.  All models still score near zero on
+seeds~49 and~51 (both V4+V5+V6), confirming that V5/V6 co-occurrence
+in compound episodes is an unsolved challenge.  Humans match the
+GPT-4.1-class mean but not variance, suggesting that tool-augmented
+agents could combine human-level recall with machine-level consistency.
 
 % ============================================================================
 \section{Limitations and Future Work}
