@@ -69,14 +69,14 @@ BENCHMARK = "ml-audit-bench"
 SEED = _env_int("SEED", 42)
 MAX_STEPS = _env_int("MAX_STEPS", 18)
 MAX_EPISODES = _env_int("MAX_EPISODES", 1)
-MAX_TOKENS = _env_int("MAX_TOKENS", 1000)
+MAX_TOKENS = _env_int("MAX_TOKENS", 2048)
 MAX_TOKENS_REASONING = _env_int("MAX_TOKENS_REASONING", 4000)
 TEMPERATURE = _env_float("TEMPERATURE", 0.0)
 REQUEST_TIMEOUT = _env_int("REQUEST_TIMEOUT", 30)
 TASK_FILTER = (os.getenv("TASK_FILTER") or "").strip().lower()
 DRY_RUN = (os.getenv("DRY_RUN") or "0").strip() == "1"
 RETRY_DELAYS = [0.5, 1.0, 2.0]
-ENFORCE_COMPARE = (os.getenv("ENFORCE_COMPARE") or "0").strip() == "1"
+ENFORCE_COMPARE = (os.getenv("ENFORCE_COMPARE") or "1").strip() == "1"
 REASONING_MODELS = {"o3", "o4-mini", "o3-mini", "o1", "o1-mini", "o1-preview"}
 
 SYSTEM_PROMPT = """
@@ -104,49 +104,66 @@ V4 Train/Test Overlap
   WHAT: one or more specific IDs appear in BOTH lists. Manually check for shared integers.
 
 V5 Cherry-Picking
-  WHERE: run_history (total_runs) AND experiment_notes/eval_report (disclosure)
-  WHAT: total_runs > 1 AND the report does NOT disclose run count or selection criterion.
+  WHERE: run_history (total_runs) AND experiment_notes (disclosure check)
+  WHAT: total_runs > 1 AND experiment_notes does NOT disclose BOTH the run count AND the selection metric.
+  HOW TO DETECT:
+    (1) inspect run_history → if total_runs > 1, you have a cherry-picking candidate.
+    (2) inspect experiment_notes → proper disclosure requires BOTH:
+          - the exact number of runs (e.g. "ran 11 experiments" or "total_runs = 11"), AND
+          - the selection criterion (e.g. "selected best by validation RMSE").
+        "Final model selected with fixed seed" → NOT proper disclosure (no run count, no metric) → V5.
+        "Single experiment run" or "total_runs=1" → only one run → NOT V5.
   VERDICT: revise (not reject).
 
 V6 Metric Shopping
   WHERE: validation_strategy (metrics_tracked list) AND eval_report (reported_metrics)
   WHAT: multiple metrics tracked but only ONE (the best) reported in eval_report.
+  HOW TO DETECT: (1) inspect validation_strategy → count metrics_tracked;
+                 (2) inspect eval_report → count reported_metrics keys;
+                 (3) if tracked > reported, that's V6.
   VERDICT: revise (not reject).
 
 V7 Entity Leakage
-  WHERE: dataset_info (grouping_key / entity field) AND split_config (split_strategy)
-  WHAT: entity-grouped data (patients, users, subjects) split WITHOUT GroupShuffleSplit.
+  WHERE: split_config (train_entities_sample AND test_entities_sample lists)
+  WHAT: same entity IDs appear in BOTH train_entities_sample AND test_entities_sample.
+  HOW TO DETECT: look at train_entities_sample and test_entities_sample in split_config.
+                 If any entity ID (e.g. "P0001") appears in BOTH lists, that is V7.
+  NOTE: If entity lists are disjoint (zero overlap), NOT V7. GroupShuffleSplit in preprocessing = clean.
 
 V8 Multi-Test Leakage
   WHERE: validation_strategy AND experiment_notes
   WHAT: test set used for BOTH hyperparameter tuning AND final evaluation (explicit evidence required).
 
 ━━━ INSPECTION STRATEGY ━━━
-Step 1 (early budget): Inspect ALL available artifacts before flagging anything.
-  Priority order: dataset_info → preprocessing → split_config → model_config →
-                  feature_engineering → validation_strategy → eval_report →
-                  run_history → experiment_notes → training_logs
+Inspect artifacts in this priority order. FLAG IMMEDIATELY when you find clear evidence —
+do NOT defer flagging to the end. After flagging, continue inspecting remaining artifacts.
 
-Step 2 (mid budget): For V5/V6, compare(run_history, experiment_notes) and
-  compare(validation_strategy, eval_report) to see both sides side-by-side.
+Priority: dataset_info → preprocessing → split_config → model_config →
+          validation_strategy → eval_report → run_history → experiment_notes →
+          training_logs → feature_engineering
 
-Step 3 (late budget): Flag each violation found. Submit only when all artifacts inspected.
-
-KEY: Experiments can have 0, 1, 2, or 3 violations. Do NOT submit after finding the first one.
-     Inspect every artifact before submitting — you may miss additional violations.
+KEY RULES:
+- Flag as soon as you see evidence. Evidence is in last_artifact_content_returned and inspected_artifact_cache.
+- After flagging, keep inspecting — medium experiments have 2 violations, hard have 3.
+- Do NOT submit until you have inspected all available artifacts OR steps_remaining == 0.
+- When steps_remaining == 1, flag any remaining violations you've found before submitting.
+- When steps_remaining == 0, this is your FINAL step — submit immediately.
 
 ━━━ EVIDENCE QUOTING ━━━
-evidence_quote MUST be verbatim text copied exactly from last_artifact_content_returned.
+evidence_quote MUST be verbatim text that appears exactly in the artifact content.
 - Copy 10-60 characters of actual code or a field value verbatim. Do NOT paraphrase.
 - For code violations: quote the exact offending line, e.g. "fit_transform(X_all)"
 - For field violations: quote the exact field content, e.g. "\"shuffle\": true"
-- The quote must be an exact substring of the artifact — if in doubt, copy more chars
+- Quote from inspected_artifact_cache (shows your last 8 inspected artifacts) or last_artifact_content_returned.
+- The quote must be an exact substring of the artifact — if in doubt, copy more chars.
 - Good: "scaler.fit_transform(X_all)"  |  Bad: "scaler was fit on all data before split"
 - Good: "\"shuffle\": true"             |  Bad: "shuffle is true"
+- Good: "\"total_runs\": 12"           |  Bad: "run_history shows multiple runs"
+- Good: "readmitted"  (as a feature_columns entry)  |  Bad: "target appears in features"
 If your quote is not an exact substring, the grader rejects it (−0.05 penalty).
 
 ━━━ CLEAN EXPERIMENTS ━━━
-30-50% of episodes have NO violations. After inspecting ALL artifacts with no clear evidence:
+30-50% of episodes have NO violations. After inspecting artifacts with no clear evidence:
 submit verdict=pass. Submitting reject/revise on a clean experiment costs −0.80 in score.
 
 CRITICAL: Do NOT submit verdict=reject or verdict=revise unless you have raised at
@@ -156,8 +173,9 @@ well-justified experiments — absence of a flag means absence of proof.
 
 Common red herrings (do NOT flag these):
 - Small test set size (e.g. 5%) justified by rare-disease context → NOT a violation
-- Multiple metrics tracked AND reported → only V6 if one metric is hidden in eval_report
-- GroupShuffleSplit used correctly → NOT V7 (check split_strategy explicitly)
+- Multiple metrics tracked AND all reported → only V6 if a tracked metric is MISSING from eval_report
+- GroupShuffleSplit used correctly with disjoint entity lists → NOT V7
+- Hyperparameters tuned on cross-validation (NOT test set) → NOT V8
 
 ━━━ ACTIONS ━━━
 {"type":"inspect","artifact":"NAME"}
@@ -171,7 +189,7 @@ Common red herrings (do NOT flag these):
 2. Do NOT flag the same violation type twice.
 3. False flag penalty: −0.10. Fabricated evidence: −0.05. Only flag with certainty.
 4. Verdict: reject for V1/V2/V3/V4/V7/V8 | revise for V5/V6 only | pass if clean.
-5. Submit only when ALL artifacts are inspected OR fewer than 2 steps remain.
+5. When steps_remaining == 1, flag any remaining violations. When steps_remaining == 0, submit immediately.
 6. Use unflag to retract an incorrect flag before submitting.
 """.strip()
 
@@ -342,6 +360,9 @@ def _required_compare_action(
     budget: int,
 ) -> Optional[Dict[str, str]]:
     if (step_index + 1) <= (budget / 2):
+        return None
+    # Reserve last 2 steps for flag + submit; don't consume them with forced compares
+    if step_index >= budget - 2:
         return None
 
     inspected = {str(a) for a in (observation.get("inspected_artifacts") or [])}
@@ -582,13 +603,20 @@ def _normalize_action(action: Dict[str, Any], observation: Dict[str, Any], step_
     if action_type == "submit":
         verdict = str(action.get("verdict") or "reject")
         summary = str(action.get("summary") or "Submitting audit result")
-        # Guard: reject/revise without any flags is almost certainly a clean episode
-        # misidentified as violated.  Downgrade verdict to "pass" to avoid the -0.80
-        # score penalty that comes from submitting the wrong verdict on clean episodes.
         flags_in_obs = observation.get("flags_raised") or []
         if verdict in {"reject", "revise"} and not flags_in_obs:
+            # No flags → must be a clean episode
             verdict = "pass"
             summary = f"No flags raised — submitting pass (was: {verdict}). {summary}"
+        elif flags_in_obs:
+            # Override verdict based on the actual violation types flagged
+            flagged_types = {
+                f.get("violation_type", "") if isinstance(f, dict) else str(f)
+                for f in flags_in_obs
+            }
+            computed = _smart_verdict(flagged_types)
+            if verdict != computed:
+                verdict = computed
         return {"type": "submit", "verdict": verdict, "summary": summary}
 
     return _fallback_action(observation, step_index, budget)
@@ -605,24 +633,34 @@ def _build_messages(
     inspected_artifacts = [str(a) for a in (observation.get("inspected_artifacts") or [])]
     available_artifacts = [str(a) for a in (observation.get("available_artifacts") or [])]
 
-    # Show full content for the 6 most recently inspected artifacts
+    # Show full content for the 8 most recently inspected artifacts
     ordered_cache: Dict[str, str] = {}
-    for artifact in inspected_artifacts[-6:]:
+    for artifact in inspected_artifacts[-8:]:
         if artifact in artifact_cache:
-            ordered_cache[artifact] = _truncate_text(artifact_cache[artifact], 700)
+            ordered_cache[artifact] = _truncate_text(artifact_cache[artifact], 900)
 
     # Track which artifacts still need inspection (helps model plan remaining steps)
     uninspected = [a for a in available_artifacts if a not in set(inspected_artifacts)]
 
     steps_remaining = max(0, budget - (step_index + 1))
-    last_content = _truncate_text(observation.get("last_action_result", ""), 1400)
+    last_content = _truncate_text(observation.get("last_action_result", ""), 2000)
+
+    # Override the goal field: the env's goal presupposes violation count which misleads
+    # the model on clean episodes. Use a neutral directive instead.
+    neutral_goal = (
+        "This experiment may have 0, 1, 2, or 3 violations. "
+        "Inspect artifacts in priority order. FLAG each violation immediately when you find evidence — "
+        "then keep inspecting remaining artifacts. "
+        "Submit pass if no violations; reject for V1/V2/V3/V4/V7/V8; revise for V5/V6 only."
+    )
+
     content = {
         "step": step_index + 1,
         "budget": budget,
         "steps_remaining": steps_remaining,
         "uninspected_artifacts": uninspected,
         "task_description": observation.get("task_description") or "",
-        "goal": observation.get("goal") or "",
+        "goal": neutral_goal,
         "dataset_type": observation.get("dataset_type") or "unknown",
         "available_artifacts": available_artifacts,
         "inspected_artifacts": inspected_artifacts,
@@ -636,11 +674,11 @@ def _build_messages(
     # Reminder injected when uninspected artifacts remain and model has been flagging
     flags_so_far = observation.get("flags_raised") or []
     reminder = ""
-    if flags_so_far and uninspected and steps_remaining >= 2:
+    if flags_so_far and uninspected and steps_remaining >= 3:
         reminder = (
             f" REMINDER: You flagged {len(flags_so_far)} violation(s) but "
             f"{len(uninspected)} artifact(s) are still uninspected "
-            f"({', '.join(uninspected[:4])}). Do NOT submit yet — inspect remaining artifacts first."
+            f"({', '.join(uninspected[:4])}). Keep inspecting — there may be more violations."
         )
 
     messages: List[Dict[str, str]] = [{"role": "system", "content": SYSTEM_PROMPT}]
@@ -783,6 +821,14 @@ def run_episode(client: Any, task: str, seed: int = 42) -> float:
                 and str(action.get("artifact", "")) == repeated_artifact
             ):
                 action = _loop_break_action(observation, repeated_artifact, flagged_violation_types)
+
+            # CRITICAL: On the last available step, block inspect AND compare actions.
+            # Without this guard, the post-loop submit becomes step budget+1, triggering
+            # env auto-terminate with verdict="reject" — which misscores clean episodes.
+            # ENFORCE_COMPARE can fire a compare on the last step, so block that too.
+            # We allow flag/submit on the last step.
+            if step_index >= budget - 1 and action.get("type") in {"inspect", "compare"}:
+                action = _fallback_action(observation, step_index, budget, flagged_violation_types)
 
             result = _http_request("POST", "/step", json_body={"action": action})
             if result is None:

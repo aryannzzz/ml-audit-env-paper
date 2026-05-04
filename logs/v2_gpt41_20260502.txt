@@ -1,0 +1,390 @@
+Starting ML Audit inference...
+[START] task=easy env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"flag","violation_type":"V1","evidence_artifact":"preprocessing","evidence_quote":"scaler.fit_transform(X_all)","severity":"high"} reward=0.15 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"training_logs"} reward=0.01 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"eval_report"} reward=0.01 done=false error=null
+[STEP] step=8 action={"type":"submit","verdict":"reject","summary":"Preprocessing leakage: scaler.fit_transform(X_all) before train_test_split."} reward=0.90 done=true error=null
+[END] success=true steps=8 score=0.900 rewards=0.02,0.02,0.15,0.02,0.02,0.01,0.01,0.90
+[START] task=easy env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"eval_report"} reward=0.01 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"validation_strategy"} reward=0.01 done=false error=null
+[STEP] step=8 action={"type":"submit","verdict":"pass","summary":"No violations found after full inspection; experiment is clean."} reward=0.90 done=true error=null
+[END] success=true steps=8 score=0.900 rewards=0.02,0.02,0.02,0.02,0.02,0.01,0.01,0.90
+[START] task=easy env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"eval_report"} reward=0.01 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"experiment_notes"} reward=0.01 done=false error=null
+[STEP] step=8 action={"type":"submit","verdict":"pass","summary":"No violations found after full inspection; experiment is clean."} reward=0.90 done=true error=null
+[END] success=true steps=8 score=0.900 rewards=0.02,0.02,0.02,0.02,0.02,0.01,0.01,0.90
+[START] task=easy env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"eval_report"} reward=0.01 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"validation_strategy"} reward=0.01 done=false error=null
+[STEP] step=8 action={"type":"submit","verdict":"pass","summary":"No violations found after inspecting all priority artifacts."} reward=0.90 done=true error=null
+[END] success=true steps=8 score=0.900 rewards=0.02,0.02,0.02,0.02,0.02,0.01,0.01,0.90
+[START] task=easy env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"flag","violation_type":"V2","evidence_artifact":"split_config","evidence_quote":"\"shuffle\": true","severity":"high"} reward=0.15 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"training_logs"} reward=0.01 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"eval_report"} reward=0.01 done=false error=null
+[STEP] step=8 action={"type":"submit","verdict":"reject","summary":"Temporal shuffle detected: time-series data split with shuffle=true (V2)."} reward=0.90 done=true error=null
+[END] success=true steps=8 score=0.900 rewards=0.02,0.02,0.02,0.15,0.02,0.01,0.01,0.90
+[START] task=easy env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"eval_report"} reward=0.01 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"validation_strategy"} reward=0.01 done=false error=null
+[STEP] step=8 action={"type":"submit","verdict":"pass","summary":"No violations detected after full inspection; experiment is clean."} reward=0.90 done=true error=null
+[END] success=true steps=8 score=0.900 rewards=0.02,0.02,0.02,0.02,0.02,0.01,0.01,0.90
+[START] task=easy env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"flag","violation_type":"V4","evidence_artifact":"split_config","evidence_quote":"\"train_ids_sample\": [\n    1,\n    2,\n    3,\n    4,\n    5,\n    6,\n    7,\n    8,\n    9,\n    10,\n    11,\n    12,\n    13,\n    14,\n    15,\n    16,\n    17,\n    18,\n    19,\n    20,\n    21,\n    22,\n    23,\n    24,\n    25,\n    26,\n    27,\n    28,\n    29,\n    30,\n    31,\n    32,\n    33,\n    34\n  ],\n  \"test_ids_sample\": [\n    1,\n    2,\n    3,\n    4,\n    5,\n    6,\n    7,\n    8,\n    9,\n    10,\n    11,\n    12,\n    13,\n    14,\n    15,\n    16,\n    17,\n    18,\n    19,\n    20,\n    21,\n    22,\n    23,\n    24,\n    25,\n    26,\n    27,\n    28,\n    29,\n    30,\n    31,\n    32,\n    33,\n    34","severity":"high"} reward=0.15 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"training_logs"} reward=0.01 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"eval_report"} reward=0.01 done=false error=null
+[STEP] step=8 action={"type":"submit","verdict":"reject","summary":"Train/test overlap: same IDs in both train_ids_sample and test_ids_sample (V4)."} reward=0.90 done=true error=null
+[END] success=true steps=8 score=0.900 rewards=0.02,0.02,0.02,0.15,0.02,0.01,0.01,0.90
+[START] task=easy env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"eval_report"} reward=0.01 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"experiment_notes"} reward=0.01 done=false error=null
+[STEP] step=8 action={"type":"submit","verdict":"pass","summary":"No violations found after full inspection; experiment is clean."} reward=0.90 done=true error=null
+[END] success=true steps=8 score=0.900 rewards=0.02,0.02,0.02,0.02,0.02,0.01,0.01,0.90
+[START] task=easy env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"eval_report"} reward=0.01 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"experiment_notes"} reward=0.01 done=false error=null
+[STEP] step=8 action={"type":"submit","verdict":"pass","summary":"No violations found after full inspection; experiment is clean."} reward=0.90 done=true error=null
+[END] success=true steps=8 score=0.900 rewards=0.02,0.02,0.02,0.02,0.02,0.01,0.01,0.90
+[START] task=easy env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"eval_report"} reward=0.01 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"experiment_notes"} reward=0.01 done=false error=null
+[STEP] step=8 action={"type":"submit","verdict":"pass","summary":"No violations found after full inspection; experiment is clean."} reward=0.90 done=true error=null
+[END] success=true steps=8 score=0.900 rewards=0.02,0.02,0.02,0.02,0.02,0.01,0.01,0.90
+[START] task=medium env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"flag","violation_type":"V1","evidence_artifact":"preprocessing","evidence_quote":"scaler.fit_transform(X_all)","severity":"high"} reward=0.15 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"validation_strategy"} reward=0.01 done=false error=null
+[STEP] step=9 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=-0.01 done=false error=null
+[STEP] step=10 action={"type":"inspect","artifact":"run_history"} reward=0.01 done=false error=null
+[STEP] step=11 action={"type":"inspect","artifact":"experiment_notes"} reward=0.01 done=false error=null
+[STEP] step=12 action={"type":"submit","verdict":"reject","summary":"Preprocessing leakage: scaler.fit_transform(X_all) before split (V1)."} reward=0.49 done=true error=null
+[END] success=true steps=12 score=0.500 rewards=0.02,0.02,0.15,0.02,0.02,0.02,0.02,0.01,-0.01,0.01,0.01,0.49
+[START] task=medium env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"validation_strategy"} reward=0.02 done=false error=null
+[STEP] step=8 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=-0.01 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"run_history"} reward=0.01 done=false error=null
+[STEP] step=10 action={"type":"inspect","artifact":"experiment_notes"} reward=0.01 done=false error=null
+[STEP] step=11 action={"type":"submit","verdict":"pass","summary":"No violations found after full inspection; experiment is clean."} reward=0.90 done=true error=null
+[END] success=true steps=11 score=0.908 rewards=0.02,0.02,0.02,0.02,0.02,0.02,0.02,-0.01,0.01,0.01,0.90
+[START] task=medium env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"validation_strategy"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=0.00 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"run_history"} reward=0.01 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"experiment_notes"} reward=0.01 done=false error=null
+[STEP] step=10 action={"type":"compare","artifact_a":"run_history","artifact_b":"experiment_notes"} reward=-0.01 done=false error=null
+[STEP] step=11 action={"type":"submit","verdict":"pass","summary":"No violations found after full inspection; experiment is clean."} reward=0.90 done=true error=null
+[END] success=true steps=11 score=0.908 rewards=0.02,0.02,0.02,0.02,0.02,0.02,0.00,0.01,0.01,-0.01,0.90
+[START] task=medium env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"validation_strategy"} reward=0.02 done=false error=null
+[STEP] step=8 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=-0.01 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"experiment_notes"} reward=0.01 done=false error=null
+[STEP] step=10 action={"type":"inspect","artifact":"run_history"} reward=0.01 done=false error=null
+[STEP] step=11 action={"type":"submit","verdict":"pass","summary":"No violations found after inspecting all artifacts; experiment is clean."} reward=0.90 done=true error=null
+[END] success=true steps=11 score=0.908 rewards=0.02,0.02,0.02,0.02,0.02,0.02,0.02,-0.01,0.01,0.01,0.90
+[START] task=medium env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"validation_strategy"} reward=0.02 done=false error=null
+[STEP] step=8 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=-0.01 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"run_history"} reward=0.01 done=false error=null
+[STEP] step=10 action={"type":"inspect","artifact":"experiment_notes"} reward=0.01 done=false error=null
+[STEP] step=11 action={"type":"inspect","artifact":"feature_engineering"} reward=0.01 done=false error=null
+[STEP] step=12 action={"type":"submit","verdict":"pass","summary":"No violations found after full inspection; experiment is clean."} reward=0.89 done=true error=null
+[END] success=true steps=12 score=0.900 rewards=0.02,0.02,0.02,0.02,0.02,0.02,0.02,-0.01,0.01,0.01,0.01,0.89
+[START] task=medium env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"flag","violation_type":"V1","evidence_artifact":"preprocessing","evidence_quote":"scaler.fit_transform(X_all)","severity":"high"} reward=0.15 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"experiment_notes"} reward=0.01 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"validation_strategy"} reward=0.01 done=false error=null
+[STEP] step=10 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=-0.01 done=false error=null
+[STEP] step=11 action={"type":"inspect","artifact":"run_history"} reward=0.01 done=false error=null
+[STEP] step=12 action={"type":"flag","violation_type":"V8","evidence_artifact":"experiment_notes","evidence_quote":"Hyperparameters tuned on test set. Best model selected based on test accuracy. Final metrics reported on same test set used for hyperparameter selection.","severity":"high"} reward=0.14 done=false error=null
+[STEP] step=13 action={"type":"submit","verdict":"reject","summary":"Reached step budget. Flags raised: ['V1', 'V8']"} reward=0.00 done=true error=null
+[END] success=true steps=13 score=0.900 rewards=0.02,0.02,0.15,0.02,0.02,0.02,0.02,0.01,0.01,-0.01,0.01,0.14,0.00
+[START] task=medium env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"flag","violation_type":"V3","evidence_artifact":"model_config","evidence_quote":"\"readmitted\"","severity":"high"} reward=0.15 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"experiment_notes"} reward=0.01 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"validation_strategy"} reward=0.01 done=false error=null
+[STEP] step=10 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=-0.01 done=false error=null
+[STEP] step=11 action={"type":"inspect","artifact":"run_history"} reward=0.01 done=false error=null
+[STEP] step=12 action={"type":"submit","verdict":"reject","summary":"Target leakage: target_column 'readmitted' included in feature_columns."} reward=0.49 done=true error=null
+[END] success=true steps=12 score=0.500 rewards=0.02,0.02,0.02,0.02,0.15,0.02,0.02,0.01,0.01,-0.01,0.01,0.49
+[START] task=medium env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"validation_strategy"} reward=0.02 done=false error=null
+[STEP] step=8 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=-0.01 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"run_history"} reward=0.01 done=false error=null
+[STEP] step=10 action={"type":"inspect","artifact":"experiment_notes"} reward=0.01 done=false error=null
+[STEP] step=11 action={"type":"inspect","artifact":"feature_engineering"} reward=0.01 done=false error=null
+[STEP] step=12 action={"type":"submit","verdict":"pass","summary":"No violations found after full inspection; experiment is clean."} reward=0.89 done=true error=null
+[END] success=true steps=12 score=0.900 rewards=0.02,0.02,0.02,0.02,0.02,0.02,0.02,-0.01,0.01,0.01,0.01,0.89
+[START] task=medium env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"validation_strategy"} reward=0.02 done=false error=null
+[STEP] step=8 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=-0.01 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"run_history"} reward=0.01 done=false error=null
+[STEP] step=10 action={"type":"inspect","artifact":"experiment_notes"} reward=0.01 done=false error=null
+[STEP] step=11 action={"type":"submit","verdict":"pass","summary":"No violations found after full inspection; experiment is clean."} reward=0.90 done=true error=null
+[END] success=true steps=11 score=0.908 rewards=0.02,0.02,0.02,0.02,0.02,0.02,0.02,-0.01,0.01,0.01,0.90
+[START] task=medium env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"flag","violation_type":"V3","evidence_artifact":"model_config","evidence_quote":"\"readmitted\"","severity":"high"} reward=0.15 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"experiment_notes"} reward=0.01 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"validation_strategy"} reward=0.01 done=false error=null
+[STEP] step=10 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=-0.01 done=false error=null
+[STEP] step=11 action={"type":"inspect","artifact":"run_history"} reward=0.01 done=false error=null
+[STEP] step=12 action={"type":"submit","verdict":"reject","summary":"Target leakage: target_column \"readmitted\" included in feature_columns."} reward=0.49 done=true error=null
+[END] success=true steps=12 score=0.500 rewards=0.02,0.02,0.02,0.02,0.15,0.02,0.02,0.01,0.01,-0.01,0.01,0.49
+[START] task=hard env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"validation_strategy"} reward=0.02 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"run_history"} reward=0.02 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"experiment_notes"} reward=0.02 done=false error=null
+[STEP] step=10 action={"type":"compare","artifact_a":"run_history","artifact_b":"experiment_notes"} reward=0.00 done=false error=null
+[STEP] step=11 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=0.00 done=false error=null
+[STEP] step=12 action={"type":"submit","verdict":"pass","summary":"No violations found after full inspection; experiment is clean."} reward=0.92 done=true error=null
+[END] success=true steps=12 score=0.933 rewards=0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.00,0.00,0.92
+[START] task=hard env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"experiment_notes"} reward=0.02 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"feature_engineering"} reward=0.02 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"validation_strategy"} reward=0.02 done=false error=null
+[STEP] step=10 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=0.00 done=false error=null
+[STEP] step=11 action={"type":"inspect","artifact":"run_history"} reward=0.02 done=false error=null
+[STEP] step=12 action={"type":"compare","artifact_a":"run_history","artifact_b":"experiment_notes"} reward=-0.01 done=false error=null
+[STEP] step=13 action={"type":"submit","verdict":"pass","summary":"No violations found after inspecting all artifacts; experiment is clean."} reward=0.91 done=true error=null
+[END] success=true steps=13 score=0.928 rewards=0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.00,0.02,-0.01,0.91
+[START] task=hard env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"flag","violation_type":"V1","evidence_artifact":"preprocessing","evidence_quote":"scaler.fit_transform(X_all)","severity":"high"} reward=0.15 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"flag","violation_type":"V4","evidence_artifact":"split_config","evidence_quote":"\"train_ids_sample\": [\n    1,\n    2,\n    3,\n    4,\n    5,\n    6,\n    7,\n    8,\n    9,\n    10,\n    11,\n    12,\n    13,\n    14,\n    15,\n    16,\n    17,\n    18,\n    19,\n    20,\n    21,\n    22,\n    23,\n    24,\n    25,\n    26,\n    27,\n    28,\n    29,\n    30,\n    31,\n    32,\n    33,\n    34,\n    35,\n    36,\n    37,\n    38,\n    39,\n    40,\n    41,\n    42,\n    43,\n    44,\n    45,\n    46,\n    47,\n    48,\n    49,\n    50,\n    51,\n    52,\n    53,\n    54,\n    55,\n    56,\n    57,\n    58\n  ],\n  \"test_ids_sample\": [\n    1,\n    2,\n    3,\n    4,\n    5,\n    6,\n    7,\n    8,\n    9,\n    10,\n    11,\n    12,\n    13,\n    14,\n    15,\n    16,\n    17,\n    18,\n    19,\n    20,\n    21,\n    22,\n    23,\n    24,\n    25,\n    26,\n    27,\n    28,\n    29,\n    30,\n    31,\n    32","severity":"high"} reward=0.15 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"experiment_notes"} reward=0.02 done=false error=null
+[STEP] step=10 action={"type":"inspect","artifact":"validation_strategy"} reward=0.02 done=false error=null
+[STEP] step=11 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=0.00 done=false error=null
+[STEP] step=12 action={"type":"inspect","artifact":"run_history"} reward=0.01 done=false error=null
+[STEP] step=13 action={"type":"compare","artifact_a":"run_history","artifact_b":"experiment_notes"} reward=-0.01 done=false error=null
+[STEP] step=14 action={"type":"submit","verdict":"reject","summary":"V1 (preprocessing leakage) and V4 (train/test overlap) violations found."} reward=0.64 done=true error=null
+[END] success=true steps=14 score=0.655 rewards=0.02,0.02,0.15,0.02,0.15,0.02,0.02,0.02,0.02,0.02,0.00,0.01,-0.01,0.64
+[START] task=hard env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"validation_strategy"} reward=0.02 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"run_history"} reward=0.02 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"experiment_notes"} reward=0.02 done=false error=null
+[STEP] step=10 action={"type":"compare","artifact_a":"run_history","artifact_b":"experiment_notes"} reward=0.00 done=false error=null
+[STEP] step=11 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=0.00 done=false error=null
+[STEP] step=12 action={"type":"submit","verdict":"pass","summary":"No violations found after full inspection; experiment is clean."} reward=0.92 done=true error=null
+[END] success=true steps=12 score=0.933 rewards=0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.00,0.00,0.92
+[START] task=hard env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"validation_strategy"} reward=0.02 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"run_history"} reward=0.02 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"experiment_notes"} reward=0.02 done=false error=null
+[STEP] step=10 action={"type":"compare","artifact_a":"run_history","artifact_b":"experiment_notes"} reward=0.00 done=false error=null
+[STEP] step=11 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=0.00 done=false error=null
+[STEP] step=12 action={"type":"submit","verdict":"pass","summary":"No violations found after full inspection; experiment is clean."} reward=0.92 done=true error=null
+[END] success=true steps=12 score=0.933 rewards=0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.00,0.00,0.92
+[START] task=hard env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"flag","violation_type":"V2","evidence_artifact":"split_config","evidence_quote":"\"shuffle\": true","severity":"high"} reward=0.15 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"experiment_notes"} reward=0.02 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"feature_engineering"} reward=0.02 done=false error=null
+[STEP] step=10 action={"type":"inspect","artifact":"validation_strategy"} reward=0.02 done=false error=null
+[STEP] step=11 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=0.00 done=false error=null
+[STEP] step=12 action={"type":"inspect","artifact":"run_history"} reward=0.01 done=false error=null
+[STEP] step=13 action={"type":"compare","artifact_a":"run_history","artifact_b":"experiment_notes"} reward=-0.01 done=false error=null
+[STEP] step=14 action={"type":"flag","violation_type":"V5","evidence_artifact":"run_history","evidence_quote":"\"total_runs\": 12","severity":"medium"} reward=0.14 done=false error=null
+[STEP] step=15 action={"type":"submit","verdict":"reject","summary":"V2 (temporal shuffle) and V5 (cherry-picking) violations found."} reward=0.64 done=true error=null
+[END] success=true steps=15 score=0.650 rewards=0.02,0.02,0.02,0.15,0.02,0.02,0.02,0.02,0.02,0.02,0.00,0.01,-0.01,0.14,0.64
+[START] task=hard env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"flag","violation_type":"V3","evidence_artifact":"model_config","evidence_quote":"\"feature_columns\": [\n    \"title_length\",\n    \"description_length\",\n    \"price_usd\",\n    \"brand_encoded\",\n    \"weight_kg\",\n    \"has_image\",\n    \"seller_rating\",\n    \"category\"\n  ]","severity":"high"} reward=0.15 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"experiment_notes"} reward=0.02 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"validation_strategy"} reward=0.02 done=false error=null
+[STEP] step=10 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=0.00 done=false error=null
+[STEP] step=11 action={"type":"inspect","artifact":"run_history"} reward=0.02 done=false error=null
+[STEP] step=12 action={"type":"compare","artifact_a":"run_history","artifact_b":"experiment_notes"} reward=-0.01 done=false error=null
+[STEP] step=13 action={"type":"submit","verdict":"reject","summary":"Target leakage: target_column 'category' included in feature_columns."} reward=0.51 done=true error=null
+[END] success=true steps=13 score=0.528 rewards=0.02,0.02,0.02,0.02,0.15,0.02,0.02,0.02,0.02,0.00,0.02,-0.01,0.51
+[START] task=hard env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"flag","violation_type":"V4","evidence_artifact":"split_config","evidence_quote":"\"train_ids_sample\": [\n    1,\n    2,\n    3,\n    4,\n    5,\n    6,\n    7,\n    8,\n    9,\n    10,\n    11,\n    12,\n    13,\n    14,\n    15,\n    16,\n    17,\n    18,\n    19,\n    20,\n    21,\n    22,\n    23,\n    24,\n    25,\n    26,\n    27,\n    28,\n    29,\n    30,\n    31,\n    32,\n    33,\n    34,\n    35,\n    36,\n    37,\n    38,\n    39,\n    40,\n    41,\n    42,\n    43,\n    44,\n    45,\n    46\n  ],\n  \"test_ids_sample\": [\n    1,\n    2,\n    3,\n    4,\n    5,\n    6,\n    7,\n    8,\n    9,\n    10,\n    11,\n    12,\n    13,\n    14,\n    15,\n    16,\n    17,\n    18,\n    19,\n    20,\n    21,\n    22,\n    23,\n    24,\n    25,\n    26,\n    27,\n    28,\n    29,\n    30,\n    31,\n    32,\n    33,\n    34,\n    35,\n    36,\n    37,\n    38,\n    39,\n    40,\n    41,\n    42,\n    43,\n    44,\n    45,\n    46","severity":"high"} reward=0.15 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"experiment_notes"} reward=0.02 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"validation_strategy"} reward=0.02 done=false error=null
+[STEP] step=10 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=0.00 done=false error=null
+[STEP] step=11 action={"type":"inspect","artifact":"run_history"} reward=0.02 done=false error=null
+[STEP] step=12 action={"type":"compare","artifact_a":"run_history","artifact_b":"experiment_notes"} reward=-0.01 done=false error=null
+[STEP] step=13 action={"type":"flag","violation_type":"V5","evidence_artifact":"run_history","evidence_quote":"\"total_runs\": 15","severity":"high"} reward=0.14 done=false error=null
+[STEP] step=14 action={"type":"submit","verdict":"reject","summary":"Train/test overlap (V4) and cherry-picking (V5) detected."} reward=0.64 done=true error=null
+[END] success=true steps=14 score=0.655 rewards=0.02,0.02,0.02,0.15,0.02,0.02,0.02,0.02,0.02,0.00,0.02,-0.01,0.14,0.64
+[START] task=hard env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"validation_strategy"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"run_history"} reward=0.02 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"experiment_notes"} reward=0.02 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=10 action={"type":"compare","artifact_a":"run_history","artifact_b":"experiment_notes"} reward=0.00 done=false error=null
+[STEP] step=11 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=0.00 done=false error=null
+[STEP] step=12 action={"type":"inspect","artifact":"feature_engineering"} reward=0.01 done=false error=null
+[STEP] step=13 action={"type":"submit","verdict":"pass","summary":"No violations found after full inspection; experiment is clean."} reward=0.91 done=true error=null
+[END] success=true steps=13 score=0.928 rewards=0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.00,0.00,0.01,0.91
+[START] task=hard env=ml-audit-bench model=gpt-4.1
+[STEP] step=1 action={"type":"inspect","artifact":"dataset_info"} reward=0.02 done=false error=null
+[STEP] step=2 action={"type":"inspect","artifact":"preprocessing"} reward=0.02 done=false error=null
+[STEP] step=3 action={"type":"inspect","artifact":"split_config"} reward=0.02 done=false error=null
+[STEP] step=4 action={"type":"flag","violation_type":"V4","evidence_artifact":"split_config","evidence_quote":"\"train_ids_sample\": [\n    1,\n    2,\n    3,\n    4,\n    5,\n    6,\n    7,\n    8,\n    9,\n    10,\n    11,\n    12,\n    13,\n    14,\n    15,\n    16,\n    17,\n    18,\n    19,\n    20,\n    21,\n    22,\n    23,\n    24,\n    25,\n    26,\n    27,\n    28,\n    29,\n    30,\n    31,\n    32,\n    33,\n    34,\n    35,\n    36,\n    37,\n    38,\n    39,\n    40,\n    41,\n    42,\n    43,\n    44,\n    45,\n    46\n  ],\n  \"test_ids_sample\": [\n    1,\n    2,\n    3,\n    4,\n    5,\n    6,\n    7,\n    8,\n    9,\n    10,\n    11,\n    12,\n    13,\n    14,\n    15,\n    16,\n    17,\n    18,\n    19,\n    20,\n    21,\n    22,\n    23,\n    24,\n    25,\n    26,\n    27,\n    28,\n    29,\n    30,\n    31,\n    32,\n    33,\n    34,\n    35,\n    36,\n    37,\n    38,\n    39,\n    40,\n    41,\n    42,\n    43,\n    44,\n    45,\n    46","severity":"high"} reward=0.15 done=false error=null
+[STEP] step=5 action={"type":"inspect","artifact":"model_config"} reward=0.02 done=false error=null
+[STEP] step=6 action={"type":"inspect","artifact":"training_logs"} reward=0.02 done=false error=null
+[STEP] step=7 action={"type":"inspect","artifact":"eval_report"} reward=0.02 done=false error=null
+[STEP] step=8 action={"type":"inspect","artifact":"experiment_notes"} reward=0.02 done=false error=null
+[STEP] step=9 action={"type":"inspect","artifact":"validation_strategy"} reward=0.02 done=false error=null
+[STEP] step=10 action={"type":"compare","artifact_a":"validation_strategy","artifact_b":"eval_report"} reward=0.00 done=false error=null
+[STEP] step=11 action={"type":"inspect","artifact":"run_history"} reward=0.02 done=false error=null
+[STEP] step=12 action={"type":"compare","artifact_a":"run_history","artifact_b":"experiment_notes"} reward=-0.01 done=false error=null
+[STEP] step=13 action={"type":"flag","violation_type":"V5","evidence_artifact":"run_history","evidence_quote":"\"total_runs\": 15","severity":"high"} reward=0.14 done=false error=null
+[STEP] step=14 action={"type":"submit","verdict":"reject","summary":"Train/test overlap (V4) and cherry-picking (V5) found."} reward=0.64 done=true error=null
+[END] success=true steps=14 score=0.655 rewards=0.02,0.02,0.02,0.15,0.02,0.02,0.02,0.02,0.02,0.00,0.02,-0.01,0.14,0.64
