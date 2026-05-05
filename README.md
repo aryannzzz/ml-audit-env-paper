@@ -255,9 +255,9 @@ ml-audit-env/
 ## Citation
 
 ```bibtex
-@inproceedings{deltadreamers2026mlauditbench,
-  title={{MLAuditBench}: An Interactive Environment for Evaluating {LLM} Agents on {ML} Experiment Integrity Auditing},
-  author={DeltaDreamers},
+@inproceedings{anonymous2026mlauditbench,
+  title={{MLAuditBench}: An Interactive {RL} Environment for Evaluating {LLM} Agents on {ML} Experiment Integrity Auditing},
+  author={Anonymous Authors},
   booktitle={NeurIPS 2026 Evaluations \& Datasets Track},
   year={2026}
 }
@@ -265,4 +265,4 @@ ml-audit-env/
 
 ## License
 
-MIT License — DeltaDreamers Team
+MIT License — Anonymous Authors

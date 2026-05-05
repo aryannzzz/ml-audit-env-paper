@@ -1,5 +1,5 @@
 \documentclass{article}
-\usepackage[eandd, nonanonymous]{neurips_2026}
+\usepackage[eandd]{neurips_2026}
 \usepackage[T1]{fontenc}
 \usepackage{url}
 \usepackage{amsfonts}
@@ -33,12 +33,7 @@
 \title{\textbf{MLAuditBench}: An Interactive RL Environment for\\
 Evaluating LLM Agents on ML Experiment Integrity Auditing}
 
-\author{
-Aryan Jain\\
-Indian Institute of Technology Madras\\
-Chennai, India\\
-\texttt{ch24b040@smail.iitm.ac.in}
-}
+\author{Anonymous Authors}
 
 \begin{document}
 \maketitle
@@ -141,28 +136,14 @@ kit (facilitator protocol, participant instructions, session-log
 templates, and scoring scripts) so the community can reproduce or extend
 the human comparison.
 
-\paragraph{Extensions in this release.}
-Beyond the core environment design, this release (a) adds the full human
-baseline study (Section~\ref{sec:human}); (b) adds an evidence-matching
-threshold ablation showing rank stability over $\{0.6,\dots,1.0\}$
-(Section~\ref{sec:threshold}); (c) adds bootstrap 95\% CIs and a
-stratified-seed protocol for variance reduction
-(Section~\ref{sec:stats}); (d) consolidates and strengthens the
-limitations and roadmap (Section~\ref{sec:limitations}); (e) makes
-the entire raw evaluation log set publicly available
-(\texttt{all\_results.txt} in the repository); (f) identifies and
-fixes five additional inference-script failure modes (ENFORCE\_COMPARE
-budget exhaustion, verdict-override from actual flags, premature submit
-timing, deferred-flagging strategy, and V5 disclosure false-negatives)
-that together reduce GPT-4.1-mini easy/medium 10-seed variance from
-$\sigma{=}0.39/0.34$ to $\sigma{=}0.00/0.003$
-(Section~\ref{sec:fixes}); and (g) stabilises the v1.1 experiment pool,
-disambiguates v1.0 vs.\ v1.1 archetype counts, and supplies a
-hard-tier violation-type analysis (Section~\ref{sec:hardanalysis}).
-These extensions collectively address the major open questions in the
-original release: human-comparison gap, uncharacterised evaluation
-variance, archetype coverage, grader sensitivity, model diversity, and
-synthetic-only scope (Section~\ref{sec:limitations}).
+\paragraph{Paper organisation.}
+Section~\ref{sec:related} surveys related work.
+Section~\ref{sec:design} describes the environment design.
+Section~\ref{sec:scoring} specifies the reward function and
+Section~\ref{sec:eval} presents the evaluation protocol and results.
+Sections~\ref{sec:human}--\ref{sec:fixes} analyse the human baseline,
+variance, threshold sensitivity, and inference-script failure modes.
+Section~\ref{sec:limitations} discusses limitations and future work.
 
 % ============================================================================
 \section{Related Work}
@@ -307,7 +288,7 @@ easy/medium/hard; and step budgets $\{8, 12, 18\}$.
 
 \begin{table}[h]
 \centering
-\caption{Violation taxonomy (reproduced for self-containedness).}
+\caption{Violation taxonomy (8 types, all from Kapoor \& Narayanan). V6 (Metric Shopping) is the hardest to detect, requiring cross-artifact comparison.}
 \label{tab:violations}
 \small
 \begin{tabular}{llllp{5cm}}
@@ -935,6 +916,23 @@ substantially suppressed by fixable script bugs, not model capability
 limits --- a methodological caution for agent benchmark reporting.
 We hope this benchmark catalyses research at the intersection of AI
 safety, scientific integrity, and agent evaluation.
+
+% ============================================================================
+\paragraph{Reproducibility Statement.}
+All experiments used fixed seeds (42--51) with temperature~$= 0$.
+The environment server is packaged as an OpenEnv-compliant Docker container
+and deployed on an anonymised Hugging Face Spaces page (URL withheld for
+blind review; provided in supplementary).
+The complete inference script (\texttt{inference.py}), all per-seed raw
+logs (\texttt{all\_results.txt}), and the human-evaluation kit are included
+in the supplementary ZIP.
+Estimated compute cost: ${\approx}$\$4 for the GPT-4.1 and GPT-4.1-mini
+10-seed evaluations; ${\approx}$\$6 for o4-mini reasoning tokens; human
+study conducted locally at no API cost.
+
+\begin{ack}
+Withheld for anonymous review.
+\end{ack}
 
 % ============================================================================
 \bibliographystyle{plainnat}

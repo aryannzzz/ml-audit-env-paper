@@ -6,7 +6,7 @@
 MLAuditBench was created to evaluate whether language-model agents can perform integrity auditing of machine learning experiments as an interactive task. The benchmark targets leakage and reporting failures that appear in reproducibility studies, and it is designed to test sequential evidence gathering, cross-artifact comparison, and evidence-grounded decision making under a step budget.
 
 - Who created it and on whose behalf?
-The dataset and environment were created by the DeltaDreamers team for the Meta PyTorch x Scaler OpenEnv Hackathon, with packaging and deployment aligned to the Hugging Face Spaces execution model.
+The dataset and environment were created by the anonymous authors (withheld for blind review), with packaging and deployment aligned to the Hugging Face Spaces / OpenEnv execution model.
 
 - Was there funding? Any conflicts of interest?
 N/A - No explicit grant funding information is documented in the repository. The benchmark was produced in a competition setting. No direct conflicts of interest are declared in project files.

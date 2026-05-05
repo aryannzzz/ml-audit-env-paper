@@ -44,7 +44,7 @@
     \item {\bf Experimental result reproducibility}
     \item[] Question: Does the paper fully disclose all the information needed to reproduce the main experimental results of the paper to the extent that it affects the main claims and/or conclusions of the paper (regardless of whether the code and data are provided or not)?
     \item[] Answer: \answerYes{}
-    \item[] Justification: The full environment is publicly deployed at \url{https://huggingface.co/spaces/DeltaDreamers/ml-audit-env}. The \texttt{inference.py} baseline script with all hyperparameters, model names, seeds, API endpoints, and scoring formula is included in the repository and described in \S4.
+    \item[] Justification: The full environment is publicly deployed (URL withheld for blind review; provided in supplementary material). The \texttt{inference.py} baseline script with all hyperparameters, model names, seeds, API endpoints, and scoring formula is included in the supplementary ZIP and described in \S4.
     \item[] Guidelines: \begin{itemize}
         \item The answer \answerNA{} means that the paper does not include experiments.
         \item If the paper includes experiments, a \answerNo{} answer to this question will not be perceived well by the reviewers: Making the paper reproducible is important, regardless of whether the code and data are provided or not.
@@ -57,7 +57,7 @@
 \item {\bf Open access to data and code}
     \item[] Question: Does the paper provide open access to the data and code, with sufficient instructions to faithfully reproduce the main experimental results, as described in supplemental material?
     \item[] Answer: \answerYes{}
-    \item[] Justification: The environment and inference script are MIT-licensed and publicly accessible without registration at \url{https://huggingface.co/spaces/DeltaDreamers/ml-audit-env}. The \texttt{README.md} provides exact commands to reproduce all baseline results.
+    \item[] Justification: The environment and inference script are MIT-licensed and included in the supplementary ZIP (public deployment URL withheld for blind review). The \texttt{README.md} provides exact commands to reproduce all baseline results.
     \item[] Guidelines: \begin{itemize}
         \item The answer \answerNA{} means that paper does not include experiments requiring code.
         \item Please see the NeurIPS code and data submission guidelines (\url{https://neurips.cc/public/guides/CodeSubmissionPolicy}) for more details.
