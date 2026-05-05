@@ -70,7 +70,7 @@ python inference.py
 ### Live Demo
 
 ```bash
-curl https://aryannzzz-ml-audit-env.hf.space/health
+curl https://huggingface.co/spaces/mlauditbench-anon/ml-audit-env/health
 ```
 
 ## Baseline Scores
@@ -265,4 +265,4 @@ ml-audit-env/
 
 ## License
 
-MIT License — Anonymous Authors
+CC BY 4.0 — Anonymous Authors

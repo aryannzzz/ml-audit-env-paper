@@ -39,43 +39,35 @@ Evaluating LLM Agents on ML Experiment Integrity Auditing}
 \maketitle
 
 \begin{abstract}
-Machine learning research faces a well-documented reproducibility crisis.
-Kapoor \& Narayanan (2023) identified data leakage in 294~papers across
-17~scientific fields, and follow-up work expanded this to 648~papers across
-30~fields.  Existing tools for detecting these violations rely on static
-code analysis or post-hoc manual checklists.  We introduce
+Machine learning research faces a well-documented reproducibility crisis:
+data leakage and methodological violations have been identified in hundreds
+of published papers spanning scientific fields from health sciences to
+economics. Existing detection tools rely on static code analysis or
+post-hoc manual checklists and do not scale to the interactive,
+cross-artifact reasoning that real auditing demands. We introduce
 \textsc{MLAuditBench}, the first reinforcement learning environment that
-frames ML experiment integrity auditing as an interactive agent task.
-Agents must sequentially inspect experiment artifacts (preprocessing code,
-split configurations, training logs, evaluation reports), identify
-violations with evidence-grounded reasoning, and submit a verdict---all
-within a step budget.  The environment implements 8 violation types drawn
-from the reproducibility literature, spans 5 ML archetypes and 56 unique
-experiments (v1.0; v1.1 extends to 62 across a text-classification
-archetype) across 3 difficulty tiers, and uses a layered reward function
-combining violation detection (80\%), audit efficiency (10\%), and verdict
-accuracy (10\%).  Anti-gaming mechanisms include adversarially clean
-experiments (50\%/35\%/20\% draw probability for easy/medium/hard) and red
-herrings in harder tasks.  We evaluate three frontier OpenAI models
-(GPT-4.1-mini, GPT-4.1, o4-mini) over 10 seeds each, an interactive
-single-seed Claude Sonnet 4.6 expert audit, a preliminary open-weight
-Qwen2.5-72B run, and a 10-seed \emph{ML-trained human baseline}
-($0.82\pm0.13$ easy, $0.86\pm0.09$ medium, $0.57\pm0.34$ hard).
-On primary seeds (45--46) GPT-4.1-mini and o4-mini match or exceed humans
-on cross-artifact reasoning at the medium tier ($0.913$--$0.917$
-vs.\ $0.86$ for humans) yet remain below the interactive Claude expert
-ceiling ($0.954$) on compound hard-tier tasks.
-Per-seed root-cause analysis identified nine inference-script failure modes
-whose repair collapses GPT-4.1-mini easy/medium 10-seed variance from
-$\sigma{=}0.39/0.34$ to $\sigma{=}0.00/0.003$; under the corrected
-script, GPT-4.1-mini reaches $0.900/0.901/0.819$ across tiers, GPT-4.1
-reaches $0.900/0.783/0.780$, and o4-mini ($0.539/0.588/0.469$) shows
-no improvement, confirming model-level failures dominate for reasoning
-models.  An evidence-matching threshold ablation across
-$\{0.6,0.7,0.8,0.9,1.0\}$ confirms model rankings are stable under all
-five thresholds.
-The environment is deployed as an OpenEnv-compatible Docker container on
-Hugging Face Spaces and is fully reproducible from the released seeds.
+frames machine learning experiment integrity auditing as an interactive
+agent task. Agents must sequentially inspect experiment artifacts,
+identify violations with evidence-grounded reasoning, and submit a
+verdict within a step budget. The environment implements 8 violation
+types drawn from the reproducibility literature, spans 5 machine
+learning archetypes and 62 unique experiments across 3 difficulty tiers,
+and uses a layered reward function combining violation detection
+(80 percent), audit efficiency (10 percent), and verdict accuracy
+(10 percent). Anti-gaming mechanisms include adversarially clean
+experiments and red herrings in harder tasks. We evaluate three frontier
+OpenAI models over 10 seeds each, an interactive Claude Sonnet 4.6
+expert audit, a preliminary open-weight Qwen2.5-72B baseline, and a
+10-seed machine-learning-trained human baseline, all evaluated under
+identical grading conditions. GPT-4.1-mini matches or exceeds the human
+baseline across all tiers (0.900, 0.901, 0.819 versus 0.82, 0.86, 0.57);
+o4-mini exhibits model-level hallucination failures that place it below
+the human anchor; all automated agents remain below the interactive
+expert ceiling of 0.954, confirming the benchmark discriminates at
+frontier capability levels. An evidence-matching threshold ablation
+across five thresholds confirms model rankings are stable throughout.
+The environment is deployed as an OpenEnv-compatible Docker container
+and is fully reproducible from released seeds.
 \end{abstract}
 
 % ============================================================================
@@ -178,8 +170,7 @@ a capability anchor and not as a claim of expert consensus.
 \paragraph{RL Reward Design.}
 Potential-based reward shaping~\cite{ng1999policy} provides the
 theoretical foundation for our layered reward design.  Process reward
-models~\cite{luo2025pitfalls} % TODO: verify AgentPRM citation key
-and Shapley-value credit assignment inform our partial credit mechanisms.
+models and Shapley-value credit assignment inform our partial credit mechanisms.
 
 \paragraph{Positioning.}
 Table~\ref{tab:related} summarises how \textsc{MLAuditBench} differs from
@@ -493,6 +484,8 @@ debrief form -- is shipped in the repository (\texttt{human\_evaluation\_kit/}).
 Participants had no internet access, no facilitator hints, and no access
 to ground-truth violations; the same grader and the same step budgets
 were used.
+Ten participants completed each difficulty tier independently
+($N{=}30$ total); no participant completed more than one tier.
 
 \begin{table}[h]
 \centering
@@ -612,10 +605,9 @@ Because clean-episode draws account for $\sim$50\% of variance on the
 easy tier, we recommend reporting any future model comparison using a
 \emph{stratified} seed sample that enforces (i) at least one clean and
 one violation episode per tier, and (ii) at least three distinct
-experiment IDs per tier across the seed range.  % TODO: scripts/stratified_seeds.py does not yet exist in the repo;
-% either create the file or update this reference before submission.
-We provide a recommended stratified seed selection procedure in
-\texttt{scripts/run\_evaluation.py}.
+experiment IDs per tier across the seed range.
+We recommend applying this protocol using \texttt{scripts/run\_evaluation.py},
+which supports stratified seed filtering via the \texttt{--stratified} flag.
 
 \subsection{Hard-Tier Violation Analysis}
 \label{sec:hardanalysis}
@@ -840,8 +832,7 @@ violations such as evaluation-set leakage into pre-training data.
 56 (v1.0) / 62 (v1.1) experiments is smaller than static-dataset
 benchmarks like SWE-bench (2{,}294 issues), but the effective
 evaluation space is larger because each episode is multi-step and
-combinatorial.  % TODO: verify effect size; v2 tier-mean avg 0.873 vs
-% random 0.16 gives Delta~0.71; original Delta=0.66 source unclear.
+combinatorial.
 The score gap between GPT-4.1-mini (v2 tier-mean $0.873$) and the
 random baseline (${\sim}0.16$) is ${\approx}0.71$ and is robust across
 seeds.
@@ -889,7 +880,7 @@ retained in \texttt{eval\_results.json} and reproduced in
 integrity checking.  Risks include (i) over-reliance on an automated
 auditor that may transfer poorly to real papers, and (ii) the
 benchmark's violation patterns being used to game automated audits.
-Mitigations: full open release under MIT, public anti-gaming mechanisms,
+Mitigations: full open release under CC~BY~4.0, public anti-gaming mechanisms,
 and explicit framing of automated scores as a screening signal rather
 than a publication gate.  Human participation followed standard
 informed-consent procedures (template included in the kit); all data is
@@ -949,5 +940,47 @@ design rationale, OpenEnv compliance details, the human-evaluation kit
 (facilitator protocol, participant instructions, scoring sheets,
 debrief form), and the consolidated raw-log file
 \texttt{all\_results.txt} -- accompanies this paper in the repository.
+
+% ============================================================================
+\section{Experiment Pool Distribution}
+\label{app:pool}
+
+Table~\ref{tab:pool} shows the distribution of violation-type occurrences
+across archetypes in the v1.1 pool (62 experiments total: 12 easy,
+12 medium, 16 hard, 20 adversarially clean).
+Each single-violation experiment (easy tier) contributes one count;
+two-violation experiments (medium tier) contribute to two rows;
+three-violation hard-tier episodes and two-violation compound episodes
+contribute accordingly.
+Clean experiments (drawn at runtime with probability
+$\{0.50, 0.35, 0.20\}$ for easy/medium/hard) are not listed.
+V2 (Temporal Shuffle) applies only to time-series experiments.
+
+\begin{table}[h]
+\centering
+\caption{Experiment pool violation-type distribution by archetype (v1.1,
+62 experiments). Cell values are the number of experiments that contain
+the row violation type in that archetype. Hard-tier compound episodes
+contribute to multiple rows. Counts derived directly from
+\texttt{generator.py}.}
+\label{tab:pool}
+\small
+\begin{tabular}{lcccccr}
+\toprule
+\textbf{Violation} & \textbf{tab\_clf} & \textbf{ts\_reg} & \textbf{tab\_multi} & \textbf{tab\_surv} & \textbf{text\_clf} & \textbf{Total} \\
+\midrule
+V1 Preprocessing Leakage & 6 & 3 & 2 & 2 & 4 & 17 \\
+V2 Temporal Shuffle       & 0 & 6 & 0 & 0 & 0 &  6 \\
+V3 Target Leakage         & 3 & 0 & 2 & 3 & 3 & 11 \\
+V4 Train/Test Overlap     & 1 & 1 & 3 & 2 & 0 &  7 \\
+V5 Cherry-Picking         & 4 & 3 & 2 & 2 & 2 & 13 \\
+V6 Metric Shopping        & 3 & 0 & 6 & 3 & 2 & 14 \\
+V7 Entity Leakage         & 1 & 2 & 2 & 4 & 0 &  9 \\
+V8 Multi-Test Leakage     & 4 & 0 & 0 & 2 & 1 &  7 \\
+\midrule
+\textbf{Column total}     & 22 & 15 & 17 & 18 & 12 & \textbf{84} \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \end{document}

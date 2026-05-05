@@ -80,7 +80,7 @@ Avoid using this dataset as a direct measure of real-world epidemiology of viola
 The benchmark is distributed as source code plus containerization assets. It is designed to run locally with Python tooling or via Docker deployment to Hugging Face Spaces.
 
 - Any IP / license restrictions?
-N/A - A definitive project-wide license statement is not clearly specified in the provided files. Users should verify licensing before redistribution.
+Released under CC BY 4.0. Users may use, adapt, and redistribute with attribution.
 
 - Any export control restrictions?
 N/A - No export-control documentation is present in repository materials.

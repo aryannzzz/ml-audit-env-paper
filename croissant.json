@@ -8,7 +8,7 @@
   "name": "MLAuditBench",
   "description": "MLAuditBench: An interactive RL environment for evaluating LLM agents on ML experiment integrity auditing. Contains 62 synthetic ML experiments across 3 difficulty tiers and 8 violation types (v1.1).",
   "url": "https://anonymous.4open.science/r/mlauditbench",
-  "license": "https://opensource.org/licenses/MIT",
+  "license": "https://creativecommons.org/licenses/by/4.0/",
   "version": "1.1.0",
   "datePublished": "2026-05-01",
   "creator": {
